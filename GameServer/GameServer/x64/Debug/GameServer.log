@@ -1,0 +1,5 @@
+﻿  Main.cpp
+C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\GameServer\Dependencies\include\SFML\System\Exception.hpp(42,1): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\stdexcept(101): message : see declaration of 'std::runtime_error'
+C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\GameServer\Dependencies\include\SFML\System\Exception.hpp(41): message : see declaration of 'sf::Exception'
+  GameServer.vcxproj -> C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\GameServer\x64\Debug\GameServer.exe
