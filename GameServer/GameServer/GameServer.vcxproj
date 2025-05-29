@@ -136,6 +136,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bullet.hpp" />
+    <ClInclude Include="ConsoleUtils.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="GameRoom.hpp" />
+    <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="PlayerState.hpp" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
