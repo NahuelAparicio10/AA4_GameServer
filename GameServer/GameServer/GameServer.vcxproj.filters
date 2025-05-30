@@ -24,9 +24,12 @@
     <ClCompile Include="NetworkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PacketParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="Shared.h">
       <Filter>Shared</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.hpp">
@@ -45,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.hpp">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,6 @@ int main()
 	NetworkManager * nt = new NetworkManager;
 
 	nt->Init();
-
+	nt->PollSockets();
 	
 }

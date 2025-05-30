@@ -29,15 +29,9 @@ void NetworkManager::PollSockets()
         sf::Socket::Status status = _socket.receive(buffer, BUFFER_SIZE, receivedSize, senderIp, senderPort);
 
         if (status == sf::Socket::Status::Done) {
-            WriteConsole("[NETWORK_MANAGER] ", receivedSize," bytes de ", senderIp.value(),":", senderPort, "\n");
-            
+            WriteConsole("[NETWORK_MANAGER] Packet recibido desde la ip: ", senderIp.value(), "\n", senderPort, "\n");
 
             HandlePacket(buffer, receivedSize, senderIp.value(), senderPort);
-        }
-        else {
-            WriteConsole("[NETWORK_MANAGER] Error al recibir datos UDP: ", static_cast<int>(status),"\n");
-
-            break;
         }
     }
 
@@ -46,7 +40,42 @@ void NetworkManager::PollSockets()
 
 void NetworkManager::HandlePacket(const char* data, std::size_t size, const sf::IpAddress& senderIp, unsigned senderPort)
 {
-    if (size == 0) return;
-    uint8_t messageType = static_cast<uint8_t>(data[0]); 
-    WriteConsole("[NETWORK_MANAGER] Tipo de mensaje recibido: ", messageType, "\n");
+    try {
+
+        PacketParser parser(data, size);
+        PacketType type = parser.ReadPacketType(); 
+        int id = parser.ReadInt(); 
+        std::optional<sf::IpAddress> senderIp;
+        unsigned short senderPort;
+
+        if (type & START_MATCH) {
+            WriteConsole("[NETWORK_MANAGER] START_MATCH recibido para id: ", id, "\n");
+            return;
+        }
+
+        if (type & PLAYER_READY) {
+            WriteConsole("[NETWORK_MANAGER] PLAYER_READY del jugador con id: ", id, "\n");
+            return;
+        }
+
+        if (type & CRITICAL) {
+            WriteConsole("[NETWORK_MANAGER] CRITICAL data procesada para id: ", id, "\n");
+        }
+
+        if (type & URGENT) {
+            WriteConsole("[NETWORK_MANAGER] URGENT data procesada para id: ", id, "\n");
+        }
+
+        if (type == NORMAL) {
+            WriteConsole("[NETWORK_MANAGER] NORMAL packet recibido para id: ", id, "\n");
+        }
+        
+
+    } catch (const std::exception& e) {
+        WriteConsole("[NETWORK_MANAGER] Error al parsear paquete: ", e.what(), "\n");
+    }
+
 }
+
+
+

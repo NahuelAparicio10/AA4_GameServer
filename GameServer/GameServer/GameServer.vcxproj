@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="PacketParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.hpp" />
@@ -144,8 +145,10 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GameRoom.hpp" />
     <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="Packet.hpp" />
+    <ClInclude Include="PacketParser.h" />
     <ClInclude Include="PlayerState.hpp" />
-    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Shared.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

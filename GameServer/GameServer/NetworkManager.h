@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "ConsoleUtils.h"
 #include <SFML/Network.hpp>
+#include "PacketParser.h"
 
 class NetworkManager
 {
