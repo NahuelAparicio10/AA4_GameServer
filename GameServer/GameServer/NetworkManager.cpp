@@ -1,5 +1,10 @@
 #include "NetworkManager.h"
 
+NetworkManager::NetworkManager()
+{
+
+}
+
 bool NetworkManager::Init()
 {
 	if (_socket.bind(GameServerPort) != sf::Socket::Status::Done) {
@@ -20,19 +25,18 @@ void NetworkManager::PollSockets()
     std::optional<sf::IpAddress> senderIp;
     unsigned short senderPort;
 
-    // Bucle para recibir múltiples mensajes si llegan varios de golpe
     while (true) {
         sf::Socket::Status status = _socket.receive(buffer, BUFFER_SIZE, receivedSize, senderIp, senderPort);
 
         if (status == sf::Socket::Status::Done) {
-            WriteConsole("[NETWORK]")
-            std::cout << "[RECEIVED] " << receivedSize << " bytes de "
-                << senderIp.value() << ":" << senderPort << "\n";
+            WriteConsole("[NETWORK_MANAGER] ", receivedSize," bytes de ", senderIp.value(),":", senderPort, "\n");
+            
 
             HandlePacket(buffer, receivedSize, senderIp.value(), senderPort);
         }
         else {
-            std::cerr << "[ERROR] Error al recibir datos UDP (" << static_cast<int>(status) << ")\n";
+            WriteConsole("[NETWORK_MANAGER] Error al recibir datos UDP: ", static_cast<int>(status),"\n");
+
             break;
         }
     }
