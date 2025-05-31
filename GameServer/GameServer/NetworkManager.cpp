@@ -7,12 +7,12 @@ NetworkManager::NetworkManager()
 
 bool NetworkManager::Init()
 {
-	if (_socket.bind(GameServerPort) != sf::Socket::Status::Done) {
-		WriteConsole("[NETWORK_MANAGER] No se ha bindeado con el puerto: ",GameServerPort);
-		return false;
-	}
+    if (_socket.bind(GameServerPort) != sf::Socket::Status::Done) {
+        WriteConsole("[NETWORK_MANAGER] No se ha bindeado con el puerto: ", GameServerPort);
+        return false;
+    }
 
-    _socket.setBlocking(false); 
+    _socket.setBlocking(false);
     WriteConsole("[NETWORK_MANAGER] GameServer escuchando en puerto UDP : ", GameServerPort, "\n");
     return true;
 
@@ -31,51 +31,24 @@ void NetworkManager::PollSockets()
         if (status == sf::Socket::Status::Done) {
             WriteConsole("[NETWORK_MANAGER] Packet recibido desde la ip: ", senderIp.value(), "\n", senderPort, "\n");
 
-            HandlePacket(buffer, receivedSize, senderIp.value(), senderPort);
+            HandlePacket(buffer, receivedSize, senderIp, senderPort);
         }
     }
 
 
 }
 
-void NetworkManager::HandlePacket(const char* data, std::size_t size, const sf::IpAddress& senderIp, unsigned senderPort)
-{
+void NetworkManager::HandlePacket(const char* data, std::size_t size, const std::optional<sf::IpAddress>& senderIp, unsigned senderPort) {
     try {
-
         PacketParser parser(data, size);
-        PacketType type = parser.ReadPacketType(); 
-        int id = parser.ReadInt(); 
-        std::optional<sf::IpAddress> senderIp;
-        unsigned short senderPort;
+        PacketHeader headerType = parser.ReadPacketType();
 
-        if (type & START_MATCH) {
-            WriteConsole("[NETWORK_MANAGER] START_MATCH recibido para id: ", id, "\n");
-            return;
-        }
 
-        if (type & PLAYER_READY) {
-            WriteConsole("[NETWORK_MANAGER] PLAYER_READY del jugador con id: ", id, "\n");
-            return;
-        }
+        //WriteConsole(senderIp);
+        _dispatcher.Dispatch(headerType, data, size, senderIp, senderPort);
 
-        if (type & CRITICAL) {
-            WriteConsole("[NETWORK_MANAGER] CRITICAL data procesada para id: ", id, "\n");
-        }
-
-        if (type & URGENT) {
-            WriteConsole("[NETWORK_MANAGER] URGENT data procesada para id: ", id, "\n");
-        }
-
-        if (type == NORMAL) {
-            WriteConsole("[NETWORK_MANAGER] NORMAL packet recibido para id: ", id, "\n");
-        }
-        
-
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception& e) {
         WriteConsole("[NETWORK_MANAGER] Error al parsear paquete: ", e.what(), "\n");
     }
-
 }
-
-
-

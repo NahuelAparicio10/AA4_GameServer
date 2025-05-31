@@ -9,7 +9,7 @@ class PacketParser {
 public:
     PacketParser(const char* data, std::size_t size);
 
-    PacketType ReadPacketType();
+    PacketHeader ReadPacketType();
     int ReadInt();
 
     std::size_t RemainingSize() const;

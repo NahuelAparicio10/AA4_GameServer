@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="PacketDispatcher.cpp" />
     <ClCompile Include="PacketParser.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="GameRoom.hpp" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Packet.hpp" />
+    <ClInclude Include="PacketDispatcher.h" />
     <ClInclude Include="PacketParser.h" />
     <ClInclude Include="PlayerState.hpp" />
     <ClInclude Include="Shared.h" />

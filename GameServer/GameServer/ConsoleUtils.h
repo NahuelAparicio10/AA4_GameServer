@@ -10,3 +10,4 @@ void WriteConsole(Args&&... args)
     std::lock_guard<std::mutex> lock(consoleMutex);
     (std::cout << ... << args) << '\n';
 }
+

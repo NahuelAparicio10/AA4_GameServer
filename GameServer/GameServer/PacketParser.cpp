@@ -5,11 +5,11 @@ PacketParser::PacketParser(const char* data, std::size_t size)
 {
 }
 
-PacketType PacketParser::ReadPacketType() {
+PacketHeader PacketParser::ReadPacketType() {
     CheckSize(sizeof(uint8_t));
     uint8_t mask = *reinterpret_cast<const uint8_t*>(_data + _offset);
     _offset += sizeof(uint8_t);
-    return static_cast<PacketType>(mask);
+    return static_cast<PacketHeader>(mask);
 }
 
 int PacketParser::ReadInt() {
