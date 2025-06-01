@@ -1,85 +1,69 @@
-﻿#include "PacketDispatcher.h"
-#include "ConsoleUtils.h"
+#include "PacketDispatcher.h"
 
-PacketDispatcher::PacketDispatcher() : running(true), dispatchThread(&PacketDispatcher::DispatchLoop, this) {}
-
-PacketDispatcher::~PacketDispatcher() {
-    running = false;
-    queueCv.notify_all();
-    if (dispatchThread.joinable()) dispatchThread.join();
+PacketDispatcher::PacketDispatcher() : _running(false)
+{
 }
 
-void PacketDispatcher::Dispatch(PacketHeader headerType, const char* data, std::size_t size, const std::optional<sf::IpAddress>& senderIp, unsigned short senderPort) {
-   
-    if (headerType & URGENT) {
-       
-        std::thread urgentThread(&PacketDispatcher::HandleUrgent, this, data, size, senderIp, senderPort);
-        urgentThread.detach();
-        return;
+PacketDispatcher::~PacketDispatcher()
+{
+	Stop();
+}
+
+void PacketDispatcher::EnqueuePacket(const RawPacketJob& job)
+{
+	std::lock_guard<std::mutex> lock(_mutex);
+    if (job.headerMask & PacketHeader::CRITICAL) {
+        _queueCritical.push(job);
     }
+    else if (job.headerMask & PacketHeader::URGENT) {
+        _queueUrgent.push(job);
+    }
+    else {
+        _queueNormal.push(job);
+    }
+}
 
-    QueuedPacket packet;
-    packet.data = std::vector<char>(data, data + size);
-    packet.size = size;
-    //packet.senderIp = senderIp.value().toString();
-    packet.senderPort = senderPort;
+void PacketDispatcher::RegisterHandler(PacketType type, std::function<void(const RawPacketJob&)> handler) {	_handlers[type] = handler; }
 
+void PacketDispatcher::Start()
+{
+	_running = true;
+	_dispatchThread = std::thread(&PacketDispatcher::DispatchLoop, this);
+}
+
+void PacketDispatcher::Stop()
+{
+	_running = false;
+	if (_dispatchThread.joinable()) _dispatchThread.join();
+}
+
+void PacketDispatcher::DispatchLoop()
+{
+    while (_running) 
     {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        queue.push(packet);
-    }
-    queueCv.notify_one();
-}
-
-void PacketDispatcher::DispatchLoop() {
-    while (running) {
-        QueuedPacket packet;
+        RawPacketJob job;
         {
-            std::unique_lock<std::mutex> lock(queueMutex);
-            queueCv.wait(lock, [&]() { return !queue.empty() || !running; });
-            if (!running && queue.empty()) break;
-
-            packet = queue.front();
-            queue.pop();
+            std::lock_guard<std::mutex> lock(_mutex);
+            if (!_queueCritical.empty()) {
+                job = _queueCritical.front();
+                _queueCritical.pop();
+            }
+            else if (!_queueUrgent.empty()) {
+                job = _queueUrgent.front();
+                _queueUrgent.pop();
+            }
+            else if (!_queueNormal.empty()) {
+                job = _queueNormal.front();
+                _queueNormal.pop();
+            }
+            else {
+                continue;
+            }
         }
 
-        HandlePacketInQueue(packet);
-    }
-}
-
-void PacketDispatcher::HandlePacketInQueue(const QueuedPacket& packet) {
-    try {
-        PacketParser parser(packet.data.data(), packet.size);
-        PacketHeader type = parser.ReadPacketType();
-
-        int payload = parser.ReadInt();
-        WriteConsole("[QUEUED] Payload: ", payload, "\n");
-
-        if (type == CRITIC)
-            WriteConsole("[QUEUED] CRITIC packet ejecutado en hilo común.\n");
-        else
-            WriteConsole("[QUEUED] NORMAL packet ejecutado en hilo común.\n");
-
-    }
-    catch (const std::exception& e) {
-        WriteConsole("[QUEUED] Error al procesar: ", e.what(), "\n");
-    }
-}
-
-void PacketDispatcher::HandleUrgent(const char* data, std::size_t size, const std::optional<sf::IpAddress>& senderIpStr, unsigned short senderPort) {
-    try {
-        PacketParser parser(data, size);
-        PacketHeader type = parser.ReadPacketType();
-
-        WriteConsole("[URGENT] Packet desde: ", senderIpStr.value(), "\n");
-        int payload = parser.ReadInt();
-        WriteConsole("[URGENT] Payload: ", payload, "\n");
-
-        if (type & CRITIC)
-            WriteConsole("[URGENT] (también CRITIC)\n");
-
-    }
-    catch (const std::exception& e) {
-        WriteConsole("[URGENT] Error al procesar: ", e.what(), "\n");
+        auto it = _handlers.find(job.type);
+        if (it != _handlers.end()) {
+            it->second(job);
+        }
     }
 }

@@ -1,11 +1,13 @@
 #include <SFML/Graphics.hpp>
-#include "NetworkManager.h"
+#include "GameServer.h"
+
+std::atomic<bool> running(true);
 
 int main()
 {
-	NetworkManager * nt = new NetworkManager;
+	GameServer server;
 
-	nt->Init();
-	nt->PollSockets();
-	
+	server.Run(running);
+
+	return 0;
 }

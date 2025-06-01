@@ -1,38 +1,31 @@
 #pragma once
+#include "NetworkDefs.h"
+#include <functional>
 #include <thread>
 #include <mutex>
 #include <queue>
-#include <atomic>
-#include <condition_variable>
-#include <string>
-#include <vector>
-#include <SFML/Network.hpp>
-#include "PacketParser.h"
-#include "Constants.h"
 
-struct QueuedPacket {
-    std::vector<char> data;
-    std::size_t size;
-   std::string senderIp;
-    unsigned short senderPort;
-};
-
-class PacketDispatcher {
+class PacketDispatcher
+{
 public:
     PacketDispatcher();
     ~PacketDispatcher();
 
-    void Dispatch(PacketHeader headerType, const char* data, std::size_t size, const std::optional<sf::IpAddress>& senderIp, unsigned short senderPort);
+    void EnqueuePacket(const RawPacketJob& job);
+    void RegisterHandler(PacketType type, std::function<void(const RawPacketJob&)> handler);
+
+    void Start();
+    void Stop();
 
 private:
-    std::queue<QueuedPacket> queue;
-    std::mutex queueMutex;
-    std::condition_variable queueCv;
-    std::atomic<bool> running;
-    std::thread dispatchThread;
+    std::queue<RawPacketJob> _queueNormal;
+    std::queue<RawPacketJob> _queueUrgent;
+    std::queue<RawPacketJob> _queueCritical;
+    std::map<PacketType, std::function<void(const RawPacketJob&)>> _handlers;
+    std::mutex _mutex;
+    std::atomic<bool> _running;
+    std::thread _dispatchThread;
 
     void DispatchLoop();
-
-    void HandlePacketInQueue(const QueuedPacket& packet);
-    void HandleUrgent(const char* data, std::size_t size, const std::optional<sf::IpAddress>& senderIpStr, unsigned short senderPort);
 };
+
