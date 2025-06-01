@@ -25,7 +25,9 @@ enum class PacketType : uint8_t {
     MATCH_UNIQUE = 12,
     MATCH_USED = 13,
     PLAYER_MOVEMENT = 14,
-    RECONCILE = 15
+    RECONCILE = 15,
+    ACK_JOINED = 16,
+    ACK_MATCH_CREATED = 17,
 };
 
 struct InterpolationData {

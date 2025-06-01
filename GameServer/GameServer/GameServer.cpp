@@ -37,27 +37,22 @@ void GameServer::HandleCreateMatch(const RawPacketJob& job)
     StartMatchData matchData = DeserializeMatch(job.content);
     unsigned int matchID = matchData.matchID;
 
-    {
-        std::lock_guard<std::mutex> lock(_matchMutex);
+    std::lock_guard<std::mutex> lock(_matchMutex);
 
-        if (_activeMatches.find(matchID) != _activeMatches.end()) {
-            WriteConsole("[GAMESERVER] Match ID '", matchID, "' already in use.");
-            SendDatagram(_socket, PacketHeader::CRITICAL, PacketType::MATCH_USED, "", job.sender.value(), job.port);
-            return;
-        }
-
-        auto instance = std::make_shared<GameInstance>(matchData);
-        _activeMatches[matchID] = instance;
-
-        SendDatagram(_socket, PacketHeader::CRITICAL, PacketType::MATCH_UNIQUE, "", job.sender.value(), job.port);
-
-        std::thread gameThread([instance]() {
-            instance->Run();
-            });
-        gameThread.detach();
-
-        WriteConsole("[GAMESERVER] Created match ", matchID, " with ", matchData.players.size(), " players.");
+    if (_activeMatches.find(matchID) != _activeMatches.end()) {
+        WriteConsole("[GAMESERVER] Match ID '", matchID, "' already in use.");
+        SendDatagram(_socket, PacketHeader::CRITICAL, PacketType::MATCH_USED, "", job.sender.value(), job.port);
+        return;
     }
+
+    // Crear y registrar nuevo GameInstance
+    auto match = std::make_shared<GameInstance>(matchData);
+    _activeMatches[matchID] = match;
+    std::thread([match]() { match->Run(); }).detach();
+
+    // Confirmar creación única
+    SendDatagram(_socket, PacketHeader::CRITICAL, PacketType::MATCH_UNIQUE, "", job.sender.value(), job.port);
+    WriteConsole("[GAMESERVER] Created match ", matchID, " with ", matchData.players.size(), " players.");
 }
 
 void GameServer::Run(std::atomic<bool>& running) {
@@ -78,11 +73,7 @@ void GameServer::Run(std::atomic<bool>& running) {
         if (_socket.receive(buffer, sizeof(buffer), received, sender, port) == sf::Socket::Status::Done && sender.has_value()) {
             RawPacketJob job;
             if (ParseRawDatagram(buffer, received, job, sender.value(), port)) {
-                if (job.type == PacketType::MATCH_FOUND) 
-                {
-                    _dispatcher.EnqueuePacket(job);
-                }
-                else if (job.type == PacketType::CREATE_MATCH)
+                if (job.type == PacketType::CREATE_MATCH)
                 {
                     _dispatcher.EnqueuePacket(job);
                 }

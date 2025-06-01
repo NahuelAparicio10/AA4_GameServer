@@ -27,13 +27,20 @@ void GameScene::Update(float dt)
 
 void GameScene::AddPlayer(unsigned int playerID)
 {
-	auto* player = new GameObject();
-	player->transform->position = { 25, 25 };
-	player->AddComponent<BoxCollider2D>()->size = { 32, 32 };
-	player->AddComponent<Rigidbody2D>();
-	player->id = playerID;
+    std::cout << "Añado player gay 1" << std::endl;
+    auto* player = new GameObject();
 
-	_physicsManager.Register(player);
-	_players.push_back(player);
-	_playerById[playerID] = player;
+    // Espaciado horizontal por ID
+    float xPos = 25.f + 100.f * static_cast<float>(playerID);
+    player->transform->position = { xPos, 25.f };
+
+    auto* rb = player->AddComponent<Rigidbody2D>();
+    rb->applyGravity = true;
+
+    player->AddComponent<BoxCollider2D>()->size = { 32.f, 32.f };
+    player->id = playerID;
+
+    _physicsManager.Register(player);
+    _players.push_back(player);
+    _playerById[playerID] = player;
 }
