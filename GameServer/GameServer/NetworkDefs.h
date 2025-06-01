@@ -2,7 +2,7 @@
 #include <SFML/Network.hpp>
 #include <cstdint>
 #include <string>
-
+#include <sstream>
 enum PacketHeader : uint8_t {
     NORMAL = 0b00000001,
     URGENT = 0b00000010,
@@ -23,10 +23,47 @@ enum class PacketType : uint8_t {
     JOIN_GAME = 10,
     CREATE_MATCH = 11,
     MATCH_UNIQUE = 12,
-    MATCH_USED = 13
-
+    MATCH_USED = 13,
+    PLAYER_MOVEMENT = 14,
+    RECONCILE = 15
 };
 
+struct InterpolationData {
+    sf::Vector2f previous;
+    sf::Vector2f current;
+    float timer = 0.f;
+};
+struct MovementPacket {
+    uint32_t matchID;
+    uint32_t playerID;
+    uint32_t tick;
+    sf::Vector2f position;
+    sf::Vector2f velocity;
+
+    std::string Serialize() const {
+        std::ostringstream ss;
+        ss << matchID << ":" << playerID << ":" << tick << ":"
+            << position.x << "," << position.y << ":"
+            << velocity.x << "," << velocity.y;
+        return ss.str();
+    }
+
+    static MovementPacket Deserialize(const std::string& content) {
+        MovementPacket packet;
+        std::istringstream ss(content);
+        std::string segment;
+
+        std::getline(ss, segment, ':'); packet.matchID = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.playerID = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.tick = std::stoi(segment);
+        std::getline(ss, segment, ':');
+        sscanf_s(segment.c_str(), "%f,%f", &packet.position.x, &packet.position.y);
+        std::getline(ss, segment, ':');
+        sscanf_s(segment.c_str(), "%f,%f", &packet.velocity.x, &packet.velocity.y);
+
+        return packet;
+    }
+};
 
 struct RawPacketJob {
     uint8_t headerMask;

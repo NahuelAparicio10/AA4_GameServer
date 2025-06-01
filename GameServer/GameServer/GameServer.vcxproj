@@ -135,19 +135,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxCollider2D.cpp" />
+    <ClCompile Include="BulletHandler.cpp" />
     <ClCompile Include="GameInstance.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="PacketDispatcher.cpp" />
+    <ClCompile Include="PhysicsManager.cpp" />
+    <ClCompile Include="PlayerComponentScript.cpp" />
+    <ClCompile Include="Rigidbody2D.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxCollider2D.h" />
+    <ClInclude Include="BulletHandler.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="ConsoleUtils.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="GameInstance.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="GameServer.h" />
+    <ClInclude Include="MapManager.h" />
     <ClInclude Include="NetworkDefs.h" />
     <ClInclude Include="PacketDispatcher.h" />
+    <ClInclude Include="PhysicsManager.h" />
+    <ClInclude Include="PlayerComponentScript.h" />
+    <ClInclude Include="Rigidbody2D.h" />
     <ClInclude Include="StartMatchData.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

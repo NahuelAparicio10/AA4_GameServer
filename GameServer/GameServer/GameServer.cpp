@@ -1,12 +1,15 @@
 #include "GameServer.h"
+
+sf::UdpSocket* gGameServerSocket = nullptr;
+
 GameServer::GameServer() {}
 GameServer::~GameServer() { _socket.unbind(); }
-
 bool GameServer::InitializeSocket() {
     if (_socket.bind(GameServerPort) != sf::Socket::Status::Done) {
         WriteConsole("[GAMESERVER] Failed to bind UDP port.");
         return false;
     }
+    gGameServerSocket = &_socket;
     WriteConsole("[GAMESERVER] Listening on port ", GameServerPort);
     return true;
 }
