@@ -55,7 +55,7 @@ void GameInstance::Run()
                             WriteConsole("[MATCH ", _data.matchID, "] Player joined: ", p.ip, ":", p.port);
 
                             // --- ENVÍA CONFIRMACIÓN ---
-                            SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::ACK_JOINED, std::to_string(_data.matchID) + ":" + std::to_string(p.playerID), p.ip, p.port);
+                            SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::ACK_JOINED, _data.numOfPlayers + "", p.ip, p.port);
                             break;
                         }
                     }
@@ -70,7 +70,6 @@ void GameInstance::Run()
 
     bool playersCreated = false;
     std::unordered_map<unsigned int, int> ackRetries;
-
 
     // - Tries to send create players to clients
     while (!playersCreated)
