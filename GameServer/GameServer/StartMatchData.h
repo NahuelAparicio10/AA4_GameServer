@@ -7,7 +7,7 @@
 enum class MatchType { NORMAL, RANKED };
 
 struct ClientMatchInfo {
-    sf::IpAddress ip;
+    sf::IpAddress ip = sf::IpAddress::Any;
     unsigned short port;
     unsigned int playerID = 0;
 };
@@ -15,37 +15,48 @@ struct ClientMatchInfo {
 struct StartMatchData {
     unsigned int matchID;
     MatchType type;
+    int numOfPlayers;
     std::vector<ClientMatchInfo> players;
 };
-// -- Serializa formato: matchID:type:ip:port:playerID:ip:port:playerID...
-inline std::string SerializeMatch(const StartMatchData& data) {
-    std::ostringstream ss;
-    ss << data.matchID << ":" << (data.type == MatchType::RANKED ? "RANKED" : "NORMAL");
-    for (const auto& p : data.players)
-        ss << ":" << p.ip.toString() << ":" << p.port << ":" << p.playerID;
-    return ss.str();
+
+inline StartMatchData DeserializeMatch(const std::string& serialized) {
+    StartMatchData data;
+    std::istringstream ss(serialized);
+    std::string token;
+    std::vector<std::string> tokens;
+
+    // Separar todos los tokens por ':'
+    while (std::getline(ss, token, ':')) {
+        tokens.push_back(token);
+    }
+
+    if (tokens.size() < 3) throw std::runtime_error("Invalid serialized StartMatchData");
+
+    // Parse matchID, matchType, numOfPlayers
+    data.matchID = std::stoi(tokens[0]);
+    data.type = (tokens[1] == "RANKED") ? MatchType::RANKED : MatchType::NORMAL;
+    data.numOfPlayers = std::stoi(tokens[2]);
+    
+    return data;
 }
 
-// -- Deserializa el mismo formato
-inline StartMatchData DeserializeMatch(const std::string& str) {
-    StartMatchData data;
-    std::istringstream ss(str);
+inline StartMatchData DeserializePlayers(const std::string& serialized, StartMatchData data) 
+{
+    std::istringstream ss(serialized);
     std::string token;
+    std::vector<std::string> tokens;
 
-    std::getline(ss, token, ':');
-    data.matchID = std::stoi(token);
+    while (std::getline(ss, token, ':')) { tokens.push_back(token); }
 
-    std::getline(ss, token, ':');
-    data.type = (token == "RANKED") ? MatchType::RANKED : MatchType::NORMAL;
+    if (tokens.size() < 3) throw std::runtime_error("Invalid serialized players");
 
-    while (std::getline(ss, token, ':')) {
-        std::optional<sf::IpAddress> ip = sf::IpAddress::resolve(token);
-        std::getline(ss, token, ':');
-        unsigned short port = static_cast<unsigned short>(std::stoi(token));
-        std::getline(ss, token, ':');
-        unsigned int playerID = static_cast<unsigned int>(std::stoi(token));
-
-        data.players.push_back({ ip.value(), port, playerID });
+    for (size_t i = 3; i + 2 < tokens.size(); i += 3) {
+        ClientMatchInfo p;
+        std::optional<sf::IpAddress> ipAdress = sf::IpAddress::resolve(tokens[i]);
+        p.ip = ipAdress.value();
+        p.port = static_cast<unsigned short>(std::stoi(tokens[i + 1]));
+        p.playerID = std::stoi(tokens[i + 2]);
+        data.players.push_back(p);
     }
 
     return data;

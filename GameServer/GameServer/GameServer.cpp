@@ -4,6 +4,8 @@ sf::UdpSocket* gGameServerSocket = nullptr;
 
 GameServer::GameServer() {}
 GameServer::~GameServer() { _socket.unbind(); }
+
+// -- Bind to the port
 bool GameServer::InitializeSocket() {
     if (_socket.bind(GameServerPort) != sf::Socket::Status::Done) {
         WriteConsole("[GAMESERVER] Failed to bind UDP port.");
@@ -16,7 +18,6 @@ bool GameServer::InitializeSocket() {
 
 void GameServer::DispatchPacket(const RawPacketJob& job) 
 {
-    // Extrae matchID desde el contenido (formato: matchID:payload)
     std::istringstream ss(job.content);
     std::string matchIDStr;
     std::getline(ss, matchIDStr, ':');
@@ -39,19 +40,28 @@ void GameServer::HandleCreateMatch(const RawPacketJob& job)
 
     std::lock_guard<std::mutex> lock(_matchMutex);
 
+    // - If the match ID is already in use returns to SS MATCH_USED and wait for another ID to come
+
     if (_activeMatches.find(matchID) != _activeMatches.end()) {
         WriteConsole("[GAMESERVER] Match ID '", matchID, "' already in use.");
-        SendDatagram(_socket, PacketHeader::CRITICAL, PacketType::MATCH_USED, "", job.sender.value(), job.port);
+        SendDatagram(_socket, PacketHeader::URGENT, PacketType::MATCH_USED, "", job.sender.value(), job.port);
         return;
     }
 
-    // Crear y registrar nuevo GameInstance
+    matchData = DeserializePlayers(job.content, matchData);
+
+    for (int i = 0; i < matchData.players.size(); i++)
+    {
+        std::cout << matchData.players[i].playerID << std::endl;
+    }
+
+    // Creates and registers a new GameInstance
     auto match = std::make_shared<GameInstance>(matchData);
     _activeMatches[matchID] = match;
     std::thread([match]() { match->Run(); }).detach();
 
     // Confirmar creación única
-    SendDatagram(_socket, PacketHeader::CRITICAL, PacketType::MATCH_UNIQUE, "", job.sender.value(), job.port);
+    SendDatagram(_socket, PacketHeader::URGENT, PacketType::MATCH_UNIQUE, "", job.sender.value(), job.port);
     WriteConsole("[GAMESERVER] Created match ", matchID, " with ", matchData.players.size(), " players.");
 }
 

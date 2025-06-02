@@ -1,12 +1,68 @@
 ﻿  GameInstance.cpp
-C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(42,1): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\stdexcept(101): message : see declaration of 'std::runtime_error'
-C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41): message : see declaration of 'sf::Exception'
-C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(91,16): warning C4834: discarding return value of function with 'nodiscard' attribute
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'GameInstance.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(93,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'GameInstance.cpp')
+  
   GameScene.cpp
-C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(42,1): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.33.31629\include\stdexcept(101): message : see declaration of 'std::runtime_error'
-C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41): message : see declaration of 'sf::Exception'
-C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(91,16): warning C4834: discarding return value of function with 'nodiscard' attribute
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'GameScene.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(93,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'GameScene.cpp')
+  
+  GameServer.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'GameServer.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(93,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'GameServer.cpp')
+  
+  Main.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'Main.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(93,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'Main.cpp')
+  
+  PacketDispatcher.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'PacketDispatcher.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(93,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'PacketDispatcher.cpp')
+  
+  PlayerComponentScript.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'PlayerComponentScript.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(93,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'PlayerComponentScript.cpp')
+  
   Generating Code...
-  GameServer.vcxproj -> C:\Users\nahue\Desktop\CloneRepositoryGitHub\AA4_Shooter_UDP\AA4_GameServer\GameServer\x64\Debug\GameServer.exe
+  GameServer.vcxproj -> E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\x64\Debug\GameServer.exe

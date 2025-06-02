@@ -12,7 +12,7 @@ public:
 	~GameScene();
 
 	 void Update(float dt);
-	 void AddPlayer(unsigned int playerID);
+	 sf::Vector2f AddPlayer(unsigned int playerID);
 	 GameObject* GetPlayerByIndex(int index) { return _players[index]; }
 	 GameObject* GetPlayerByID(unsigned int id) { return _playerById[id]; }
 	 std::map<unsigned int, GameObject*>& GetPlayerMap() { return _playerById; }

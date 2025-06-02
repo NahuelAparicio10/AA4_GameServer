@@ -20,14 +20,15 @@ void GameScene::Update(float dt)
 	{
 		p->GetComponent<Rigidbody2D>()->Update(p->transform, dt);
 	}	
+
 	_physicsManager.Update(dt);
 }
 
 
 
-void GameScene::AddPlayer(unsigned int playerID)
+sf::Vector2f GameScene::AddPlayer(unsigned int playerID)
 {
-    std::cout << "Añado player gay 1" << std::endl;
+    std::cout << "Añado player " << playerID << "Marikon" << std::endl;
     auto* player = new GameObject();
 
     // Espaciado horizontal por ID
@@ -43,4 +44,6 @@ void GameScene::AddPlayer(unsigned int playerID)
     _physicsManager.Register(player);
     _players.push_back(player);
     _playerById[playerID] = player;
+
+    return player->transform->position;
 }

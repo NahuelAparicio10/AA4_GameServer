@@ -5,8 +5,8 @@
 #include <sstream>
 enum PacketHeader : uint8_t {
     NORMAL = 0b00000001,
-    URGENT = 0b00000010,
-    CRITICAL = 0b00000100
+    CRITIC = 0b00000010,
+    URGENT = 0b00000100
 };
 
 enum class PacketType : uint8_t {
@@ -28,6 +28,8 @@ enum class PacketType : uint8_t {
     RECONCILE = 15,
     ACK_JOINED = 16,
     ACK_MATCH_CREATED = 17,
+    CREATE_PLAYER = 18,
+    ACK_PLAYERS_CREATED = 19
 };
 
 struct InterpolationData {

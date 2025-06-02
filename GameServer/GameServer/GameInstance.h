@@ -8,6 +8,7 @@
 #include <queue>
 #include "ConsoleUtils.h"
 #include "GameScene.h"
+#include <unordered_set>
 
 // -- Represents one match, its start in a exclusive port
 
