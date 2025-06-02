@@ -28,7 +28,7 @@ void GameScene::Update(float dt)
 
 sf::Vector2f GameScene::AddPlayer(unsigned int playerID)
 {
-    std::cout << "Añado player " << playerID << "Marikon" << std::endl;
+   //"Añado player " << playerID << "Marikon" << std::endl;
     auto* player = new GameObject();
 
     // Espaciado horizontal por ID

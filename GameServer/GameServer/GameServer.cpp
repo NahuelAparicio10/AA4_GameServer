@@ -52,7 +52,10 @@ void GameServer::HandleCreateMatch(const RawPacketJob& job)
 
     for (int i = 0; i < matchData.players.size(); i++)
     {
-        std::cout << matchData.players[i].playerID << std::endl;
+
+        WriteConsole(matchData.players[i].playerID);
+        WriteConsole(matchData.players[i].ip);
+        WriteConsole(matchData.players[i].port);
     }
 
     // Creates and registers a new GameInstance

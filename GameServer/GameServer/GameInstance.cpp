@@ -83,9 +83,11 @@ void GameInstance::Run()
         {
             for (const auto& p : _data.players)
             {
+                //WriteConsole("Sending playerID: " , p.playerID, " | Position: (" , ")", " | IP: " , p.ip.toString(), " | Port: " , p.port);
                 if (ackedPlayers.find(p.playerID) != ackedPlayers.end()) continue;
 
                 sf::Vector2f playerPos = _scene->AddPlayer(p.playerID);
+              
                 std::string msg = std::to_string(p.playerID) + ":" + std::to_string(playerPos.x) + ":" + std::to_string(playerPos.y);
 
                 SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::CREATE_PLAYER, msg, p.ip, p.port);

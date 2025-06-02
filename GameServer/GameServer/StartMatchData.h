@@ -8,7 +8,7 @@ enum class MatchType { NORMAL, RANKED };
 
 struct ClientMatchInfo {
     sf::IpAddress ip = sf::IpAddress::Any;
-    unsigned short port;
+    unsigned short port = 0;
     unsigned int playerID = 0;
 };
 
