@@ -50,21 +50,15 @@ void GameServer::HandleCreateMatch(const RawPacketJob& job)
 
     matchData = DeserializePlayers(job.content, matchData);
 
-    for (int i = 0; i < matchData.players.size(); i++)
-    {
-
-        WriteConsole(matchData.players[i].playerID);
-        WriteConsole(matchData.players[i].ip);
-        WriteConsole(matchData.players[i].port);
-    }
-
     // Creates and registers a new GameInstance
     auto match = std::make_shared<GameInstance>(matchData);
     _activeMatches[matchID] = match;
     std::thread([match]() { match->Run(); }).detach();
 
-    // Confirmar creación única
-    SendDatagram(_socket, PacketHeader::URGENT, PacketType::MATCH_UNIQUE, "", job.sender.value(), job.port);
+    std::string msg = std::to_string(matchData.matchID);
+    WriteConsole("MATCH DATAAA", msg);
+    // - Send ack to confirme unique ID match
+    SendDatagram(_socket, PacketHeader::URGENT, PacketType::MATCH_UNIQUE, msg, job.sender.value(), job.port);
     WriteConsole("[GAMESERVER] Created match ", matchID, " with ", matchData.players.size(), " players.");
 }
 
