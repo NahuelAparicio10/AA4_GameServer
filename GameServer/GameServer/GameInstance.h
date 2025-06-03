@@ -9,7 +9,6 @@
 #include "ConsoleUtils.h"
 #include "GameScene.h"
 #include <unordered_set>
-
 // -- Represents one match, its start in a exclusive port
 
 class GameInstance
@@ -18,6 +17,7 @@ public:
     GameInstance(const StartMatchData& data);
     void EnqueuePacket(const RawPacketJob& job);
     void Run();
+    void CreatePlayersForMatch(bool& playersCreated);
     bool IsRunning() const { return _running; }
 private:
     void HandlePlayerMovement(const RawPacketJob& job);
@@ -33,5 +33,7 @@ private:
 
     std::map<unsigned int, MovementPacket> _lastClientReported;
     GameScene* _scene = nullptr;
+    sf::Clock clock;
+    float accumulator = 0;
 };
 

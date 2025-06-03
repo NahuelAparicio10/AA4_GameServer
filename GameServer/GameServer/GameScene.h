@@ -12,11 +12,13 @@ public:
 	~GameScene();
 
 	 void Update(float dt);
-	 sf::Vector2f AddPlayer(unsigned int playerID);
+	 void AddPlayer(unsigned int playerID);
 	 GameObject* GetPlayerByIndex(int index) { return _players[index]; }
 	 GameObject* GetPlayerByID(unsigned int id) { return _playerById[id]; }
 	 std::map<unsigned int, GameObject*>& GetPlayerMap() { return _playerById; }
 	 void RegisterPlayer(unsigned int id, GameObject* go) { _playerById[id] = go; }
+	 sf::Vector2f GetPlayerPositionByID(unsigned int playerID) { return _playerById[playerID]->transform->position; }
+	 bool startGame = false;
 private:
 	PhysicsManager _physicsManager;
 

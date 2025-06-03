@@ -26,14 +26,14 @@ void GameScene::Update(float dt)
 
 
 
-sf::Vector2f GameScene::AddPlayer(unsigned int playerID)
+void GameScene::AddPlayer(unsigned int playerID)
 {
    //"Añado player " << playerID << "Marikon" << std::endl;
     auto* player = new GameObject();
 
     // Espaciado horizontal por ID
-    float xPos = 25.f + 100.f * static_cast<float>(playerID);
-    player->transform->position = { xPos, 25.f };
+    float xPos = 25.f + 250.f * static_cast<float>(playerID);
+    player->transform->position = { xPos, 600.f };
 
     auto* rb = player->AddComponent<Rigidbody2D>();
     rb->applyGravity = true;
@@ -45,5 +45,5 @@ sf::Vector2f GameScene::AddPlayer(unsigned int playerID)
     _players.push_back(player);
     _playerById[playerID] = player;
 
-    return player->transform->position;
+    //return player->transform->position;
 }

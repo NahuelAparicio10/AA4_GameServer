@@ -6,13 +6,13 @@ extern sf::UdpSocket* gGameServerSocket;
 sf::UdpSocket& GameServerSocket() {
     return *gGameServerSocket;
 }
-GameInstance::GameInstance(const StartMatchData& data) : _data(data) 
+GameInstance::GameInstance(const StartMatchData& data) : _data(data)
 {
     _scene = new GameScene(static_cast<int>(data.players.size()));
 
 }
 
-void GameInstance::EnqueuePacket(const RawPacketJob& job) 
+void GameInstance::EnqueuePacket(const RawPacketJob& job)
 {
     std::lock_guard<std::mutex> lock(_queueMutex);
     _packetQueue.push(job);
@@ -26,7 +26,7 @@ void GameInstance::Run()
     while (joined < _data.players.size()) {
         {
             std::lock_guard<std::mutex> lock(_queueMutex);
-            if (!_packetQueue.empty()) 
+            if (!_packetQueue.empty())
             {
                 RawPacketJob job = _packetQueue.front(); _packetQueue.pop();
                 if (job.type == PacketType::JOIN_GAME)
@@ -61,17 +61,92 @@ void GameInstance::Run()
                     }
                 }
             }
-           
-            
+
+
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }
     WriteConsole("[MATCH ", _data.matchID, "] All players joined. Starting game logic...");
 
-    bool playersCreated = false;
-    std::unordered_map<unsigned int, int> ackRetries;
+    // -- Create players in Server
 
-    // - Tries to send create players to clients
+    for (const auto& p : _data.players)
+    {
+        _scene->AddPlayer(p.playerID);
+    }
+
+    bool playersCreated = false;
+
+    CreatePlayersForMatch(playersCreated);
+
+    WriteConsole("ALL PLAYERS CREATED");
+
+    //- Main Loop of the match
+
+    while (_running)
+    {
+        float dt = clock.restart().asSeconds();
+        accumulator += dt;
+
+        // - Process inconming packets outside of the fixed loop
+        {
+            std::lock_guard<std::mutex> lock(_queueMutex);
+            while (!_packetQueue.empty())
+            {
+                RawPacketJob job = _packetQueue.front(); _packetQueue.pop();
+                if (job.type == PacketType::PLAYER_MOVEMENT)
+                {
+                    HandlePlayerMovement(job);
+                }
+            }
+        }
+
+        //Simular lógica a pasos fijos
+       //while (accumulator >= 0.033)
+       //{
+        _scene->Update(0.033);
+        //accumulator -= 0.033;
+    //}
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+}
+
+void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
+{
+    MovementPacket packet = MovementPacket::Deserialize(job.content);
+    _lastClientReported[packet.playerID] = packet;
+
+    GameObject* player = _scene->GetPlayerByID(packet.playerID);
+    if (!player) return;
+
+    Rigidbody2D* rb = player->GetComponent<Rigidbody2D>();
+    if (!rb) return;
+
+    rb->velocity = packet.velocity;
+    player->transform->position = packet.position;
+
+    // - Simula aquí físicas si quieres mayor fidelidad
+    _scene->Update(0.033f); // Aproximadamente 30 FPS
+
+    // -- Corrección de posición (reconciliación)
+    MovementPacket correction;
+    correction.matchID = packet.matchID;
+    correction.playerID = packet.playerID;
+    correction.tick = packet.tick;
+    correction.position = player->transform->position;
+    correction.velocity = rb->velocity;
+
+    SendToPlayer(packet.playerID, PacketHeader::CRITIC, PacketType::RECONCILE, correction.Serialize());
+
+    // -- Difusión a los demás para interpolación
+    BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, correction.Serialize());
+}
+
+//-- Handles all the creation of players systems, sends starting postion of players to clients and waits for them to create
+//-- the players, when its done continues the loop to main loop
+void GameInstance::CreatePlayersForMatch(bool& playersCreated)
+{
     while (!playersCreated)
     {
         std::unordered_set<unsigned int> ackedPlayers;
@@ -81,19 +156,23 @@ void GameInstance::Run()
 
         while (currentRetry < maxRetries && ackedPlayers.size() < _data.players.size())
         {
-            for (const auto& p : _data.players)
+            // - Sends to every client playerID:playerposX:playerposY|next players
+            for (const auto& receiver : _data.players)
             {
-                //WriteConsole("Sending playerID: " , p.playerID, " | Position: (" , ")", " | IP: " , p.ip.toString(), " | Port: " , p.port);
-                if (ackedPlayers.find(p.playerID) != ackedPlayers.end()) continue;
+                std::string msg;
+                for (const auto& sender : _data.players)
+                {
+                    sf::Vector2f playerPos = _scene->GetPlayerPositionByID(sender.playerID);
+                    msg += std::to_string(sender.playerID) + ":" +
+                        std::to_string(playerPos.x) + ":" +
+                        std::to_string(playerPos.y) + "|";
+                }
+                msg.pop_back();
 
-                sf::Vector2f playerPos = _scene->AddPlayer(p.playerID);
-              
-                std::string msg = std::to_string(p.playerID) + ":" + std::to_string(playerPos.x) + ":" + std::to_string(playerPos.y);
-
-                SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::CREATE_PLAYER, msg, p.ip, p.port);
+                SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::CREATE_PLAYER, msg, receiver.ip, receiver.port);
             }
 
-            // Espera ACKs durante 500 ms
+            // - Waits for ACK_PLAYERS_CREATED from both clients during 500 ms if ack is no recieved tries create player again
             auto start = std::chrono::steady_clock::now();
             while (std::chrono::steady_clock::now() - start < std::chrono::milliseconds(500))
             {
@@ -104,6 +183,7 @@ void GameInstance::Run()
 
                     if (job.type == PacketType::ACK_PLAYERS_CREATED)
                     {
+                        // - If job type is ACK_CREATE marks which player sent it
                         for (const auto& p : _data.players)
                         {
                             if (p.ip == job.sender && p.port == job.port)
@@ -123,82 +203,20 @@ void GameInstance::Run()
             }
 
             currentRetry++;
+
+            if (ackedPlayers.size() == _data.players.size())
+            {
+                playersCreated = true;
+            }
         }
     }
-
-    // - Game Loop
-    while (_running) {
-        {
-            std::lock_guard<std::mutex> lock(_queueMutex);
-            while (!_packetQueue.empty()) {
-                RawPacketJob job = _packetQueue.front(); _packetQueue.pop();
-                if (job.type == PacketType::PLAYER_MOVEMENT)
-                    HandlePlayerMovement(job);
-            }
-        }
-
-        // Valida posición real vs lo enviado por cliente
-        for (auto& [playerID, go] : _scene->GetPlayerMap())
-        {
-            if (_lastClientReported.count(playerID) == 0) continue;
-
-            const MovementPacket& last = _lastClientReported[playerID];
-            sf::Vector2f simulatedPos = go->transform->position;
-
-            float dx = std::abs(simulatedPos.x - last.position.x);
-            float dy = std::abs(simulatedPos.y - last.position.y);
-
-            MovementPacket corrected = last;
-            corrected.position = simulatedPos;
-
-            if (dx > 10.f || dy > 10.f)
-            {
-                SendToPlayer(playerID, PacketHeader::URGENT, PacketType::RECONCILE, corrected.Serialize());
-            }
-            else
-            {
-                BroadcastToOthers(playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, corrected.Serialize());
-            }
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(33)); // ~30 FPS
-    }
-
 }
 
-    void GameInstance::HandlePlayerMovement(const RawPacketJob & job)
-    {
-        MovementPacket packet = MovementPacket::Deserialize(job.content);
-        _lastClientReported[packet.playerID] = packet;
-
-        GameObject* player = _scene->GetPlayerByID(packet.playerID);
-        if (!player) return;
-
-        Rigidbody2D* rb = player->GetComponent<Rigidbody2D>();
-        if (!rb) return;
-
-        rb->velocity = packet.velocity;
-        player->transform->position = packet.position;
-
-        // - Simula aquí físicas si quieres mayor fidelidad
-        _scene->Update(0.033f); // Aproximadamente 30 FPS
-
-        // -- Corrección de posición (reconciliación)
-        MovementPacket correction;
-        correction.matchID = packet.matchID;
-        correction.playerID = packet.playerID;
-        correction.tick = packet.tick;
-        correction.position = player->transform->position;
-        correction.velocity = rb->velocity;
-
-        SendToPlayer(packet.playerID, PacketHeader::CRITIC, PacketType::RECONCILE, correction.Serialize());
-
-        // -- Difusión a los demás para interpolación
-        BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, correction.Serialize());
-    }
 
 
 
+
+// -- Given an ID sends the packet to that client
 void GameInstance::SendToPlayer(unsigned int playerID, PacketHeader header, PacketType type, const std::string& content)
 {
     for (const auto& p : _connectedPlayers)
@@ -210,6 +228,8 @@ void GameInstance::SendToPlayer(unsigned int playerID, PacketHeader header, Pack
         }
     }
 }
+
+//-- Given an ID sends the packet to every client unless ID client.
 
 void GameInstance::BroadcastToOthers(unsigned int senderID, PacketHeader header, PacketType type, const std::string& content)
 {
