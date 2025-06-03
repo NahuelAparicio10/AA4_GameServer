@@ -145,7 +145,6 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="PacketDispatcher.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
-    <ClCompile Include="PlayerComponentScript.cpp" />
     <ClCompile Include="Rigidbody2D.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -164,7 +163,6 @@
     <ClInclude Include="NetworkDefs.h" />
     <ClInclude Include="PacketDispatcher.h" />
     <ClInclude Include="PhysicsManager.h" />
-    <ClInclude Include="PlayerComponentScript.h" />
     <ClInclude Include="Rigidbody2D.h" />
     <ClInclude Include="StartMatchData.h" />
     <ClInclude Include="Transform.h" />

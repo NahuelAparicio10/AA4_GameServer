@@ -3,8 +3,7 @@
 #include "MapManager.h"
 #include "Rigidbody2D.h"
 #include "BulletHandler.h"
-#include "PlayerComponentScript.h"
-
+#include <map>
 class GameScene 
 {
 public:

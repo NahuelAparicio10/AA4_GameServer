@@ -162,14 +162,13 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
     rb->velocity = packet.velocity;
     player->transform->position = packet.position;
 
-    // - Simula aquí físicas si quieres mayor fidelidad
-    _scene->Update(0.033f); // Aproximadamente 30 FPS
+    _scene->Update(0.033f); // - 30 fps
 
-    // Verifica si hay diferencia entre lo simulado y lo recibido
+    // - Checks the difference between server pos and player pos local
     float dx = std::abs(packet.position.x - player->transform->position.x);
     float dy = std::abs(packet.position.y - player->transform->position.y);
 
-    if (dx > 5.f || dy > 5.f) {
+    if (dx > 7.5f || dy > 7.5f) {
         MovementPacket correction;
         correction.matchID = packet.matchID;
         correction.playerID = packet.playerID;
@@ -179,18 +178,15 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
 
         SendToPlayer(packet.playerID, PacketHeader::CRITIC, PacketType::RECONCILE, correction.Serialize());
     }
-    else 
-    {
-        // Difusión normal para interpolación
-        MovementPacket broadcast;
-        broadcast.matchID = packet.matchID;
-        broadcast.playerID = packet.playerID;
-        broadcast.tick = packet.tick;
-        broadcast.position = player->transform->position;
-        broadcast.velocity = rb->velocity;
+    // Difusión normal para interpolación
+    MovementPacket broadcast;
+    broadcast.matchID = packet.matchID;
+    broadcast.playerID = packet.playerID;
+    broadcast.tick = packet.tick;
+    broadcast.position = player->transform->position;
+    broadcast.velocity = rb->velocity;
 
-        BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, broadcast.Serialize());
-    }
+    BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, broadcast.Serialize());
 
    
 }

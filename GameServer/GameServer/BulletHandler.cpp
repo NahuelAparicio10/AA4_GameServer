@@ -8,7 +8,7 @@ void BulletHandler::CreateBullet(int bulletID, sf::Vector2f position, sf::Vector
     bullet->transform->position = position;
 
     auto* collider = bullet->AddComponent<BoxCollider2D>();
-    collider->size = static_cast<sf::Vector2f>(sf::Vector2f{32,32});
+    collider->size = static_cast<sf::Vector2f>(sf::Vector2f{16,16});
     collider->isTrigger = true;
 
     auto* rb = bullet->AddComponent<Rigidbody2D>();

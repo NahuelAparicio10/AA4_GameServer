@@ -63,9 +63,6 @@
     <ClCompile Include="Rigidbody2D.cpp">
       <Filter>Source Files\Compontents</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerComponentScript.cpp">
-      <Filter>Source Files\Compontents</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -117,9 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody2D.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerComponentScript.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsManager.h">
