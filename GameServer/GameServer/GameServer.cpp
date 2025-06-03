@@ -56,7 +56,6 @@ void GameServer::HandleCreateMatch(const RawPacketJob& job)
     std::thread([match]() { match->Run(); }).detach();
 
     std::string msg = std::to_string(matchData.matchID);
-    WriteConsole("MATCH DATAAA", msg);
     // - Send ack to confirme unique ID match
     SendDatagram(_socket, PacketHeader::URGENT, PacketType::MATCH_UNIQUE, msg, job.sender.value(), job.port);
     WriteConsole("[GAMESERVER] Created match ", matchID, " with ", matchData.players.size(), " players.");

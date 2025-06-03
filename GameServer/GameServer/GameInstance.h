@@ -15,8 +15,10 @@ class GameInstance
 {
 public:
     GameInstance(const StartMatchData& data);
+    ~GameInstance();
     void EnqueuePacket(const RawPacketJob& job);
     void Run();
+    void HandlePlayerDisconnected(unsigned int playerID);
     void HandleShootBullet(const RawPacketJob& job);
     void CreatePlayersForMatch(bool& playersCreated);
     bool IsRunning() const { return _running; }
@@ -38,5 +40,8 @@ private:
     sf::Clock clock;
     float accumulator = 0;
     unsigned int _nextBulletID = 1;
+
+    
+    std::unordered_map<unsigned int, std::chrono::steady_clock::time_point> _lastRespond;
 };
 

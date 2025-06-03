@@ -14,15 +14,18 @@ GameInstance::GameInstance(const StartMatchData& data) : _data(data)
         [this](int playerID) {
 
             WriteConsole("Player Hitted with ID " + playerID);
-            //_bulletHandler->CreateBullet(packet.bulletID, packet.position, packet.direction);
         });
 
-        _scene->GetBulletHandler()->onWallHitted.Subscribe(
-            [this](int bulletID) {
-                BroadcastToAll(PacketHeader::NORMAL, PacketType::DESTROY_BULLET, std::to_string(bulletID));
-                WriteConsole("Wall Hitted");
-                //_bulletHandler->CreateBullet(packet.bulletID, packet.position, packet.direction);
-            });
+    _scene->GetBulletHandler()->onWallHitted.Subscribe(
+        [this](int bulletID) {
+            BroadcastToAll(PacketHeader::NORMAL, PacketType::DESTROY_BULLET, std::to_string(bulletID));
+            WriteConsole("Wall Hitted");
+        });
+}
+
+GameInstance::~GameInstance()
+{
+    delete _scene;
 }
 
 void GameInstance::EnqueuePacket(const RawPacketJob& job)
@@ -94,8 +97,7 @@ void GameInstance::Run()
 
     WriteConsole("ALL PLAYERS CREATED");
 
-    //- Main Loop of the match
-
+    //- Main Loop of the match    
     while (_running)
     {
         float dt = clock.restart().asSeconds();
@@ -103,8 +105,10 @@ void GameInstance::Run()
 
         // - Process inconming packets outside of the fixed loop
         {
+            const int maxPacketsPerFrame = 10;
+            int processed = 0;
             std::lock_guard<std::mutex> lock(_queueMutex);
-            while (!_packetQueue.empty())
+            while (!_packetQueue.empty() && processed < maxPacketsPerFrame)
             {
                 RawPacketJob job = _packetQueue.front(); _packetQueue.pop();
                 if (job.type == PacketType::PLAYER_MOVEMENT)
@@ -114,20 +118,60 @@ void GameInstance::Run()
                 if (job.type == PacketType::SHOOT_BULLET)
                 {
                     HandleShootBullet(job);
-
                 }
+                if (job.type == PacketType::PING)
+                {
+                    // - If ping arrives check for player who sent it and refresh _lastRespond to mantain the game on
+                    for (const auto& p : _data.players)
+                    {
+                        if (p.ip == job.sender && p.port == job.port)
+                        {
+                            _lastRespond[p.playerID] = std::chrono::steady_clock::now();
+                            break;
+                        }
+                    }
+                }
+                processed++;
             }
         }
 
+        // Check for disconnected players
+        auto now = std::chrono::steady_clock::now();
+        for (auto it = _connectedPlayers.begin(); it != _connectedPlayers.end(); )
+        {
+            const auto& p = *it;
+            if (_lastRespond.find(p.playerID) != _lastRespond.end())
+            {
+                auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - _lastRespond[p.playerID]).count();
+                if (duration > 5)  
+                {
+                    WriteConsole("[MATCH ", _data.matchID, "] Player ", p.playerID, " disconnected due to timeout.");
+
+                    HandlePlayerDisconnected(p.playerID);
+
+                    it = _connectedPlayers.erase(it); 
+                    continue;
+                }
+            }
+            ++it;
+        }
         //Simular lógica a pasos fijos
-       while (accumulator >= 0.033)
+       while (accumulator >= 0.033f)
        {
-            _scene->Update(0.033);
-            accumulator -= 0.033;
+            _scene->Update(0.033f);
+            accumulator -= 0.033f;
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+// -- Notifies to other players that match is finished and removes Game instance
+void GameInstance::HandlePlayerDisconnected(unsigned int playerID)
+{
+    BroadcastToOthers(playerID, PacketHeader::URGENT, PacketType::MATCH_FINISHED, std::to_string(playerID));
+
+    _running = false;
 }
 
 void GameInstance::HandleShootBullet(const RawPacketJob& job)
@@ -152,7 +196,6 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
 {
     MovementPacket packet = MovementPacket::Deserialize(job.content);
     _lastClientReported[packet.playerID] = packet;
-
     GameObject* player = _scene->GetPlayerByID(packet.playerID);
     if (!player) return;
 
@@ -187,8 +230,6 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
     broadcast.velocity = rb->velocity;
 
     BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, broadcast.Serialize());
-
-   
 }
 
 //-- Handles all the creation of players systems, sends starting postion of players to clients and waits for them to create

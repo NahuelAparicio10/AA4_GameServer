@@ -32,7 +32,9 @@ enum class PacketType : uint8_t {
     ACK_PLAYERS_CREATED = 19,
     SHOOT_BULLET = 20,
     CREATE_BULLET = 21,
-    DESTROY_BULLET = 22
+    DESTROY_BULLET = 22,
+    PING = 23,
+    MATCH_FINISHED = 24
 };
 
 struct InterpolationData {
@@ -50,8 +52,8 @@ struct MovementPacket {
     std::string Serialize() const {
         std::ostringstream ss;
         ss << matchID << ":" << playerID << ":" << tick << ":"
-            << position.x << "," << position.y << ":"
-            << velocity.x << "," << velocity.y;
+            << position.x << ":" << position.y << ":"
+            << velocity.x << ":" << velocity.y;
         return ss.str();
     }
 
@@ -63,10 +65,10 @@ struct MovementPacket {
         std::getline(ss, segment, ':'); packet.matchID = std::stoi(segment);
         std::getline(ss, segment, ':'); packet.playerID = std::stoi(segment);
         std::getline(ss, segment, ':'); packet.tick = std::stoi(segment);
-        std::getline(ss, segment, ':');
-        sscanf_s(segment.c_str(), "%f,%f", &packet.position.x, &packet.position.y);
-        std::getline(ss, segment, ':');
-        sscanf_s(segment.c_str(), "%f,%f", &packet.velocity.x, &packet.velocity.y);
+        std::getline(ss, segment, ':'); packet.position.x = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.position.y = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.velocity.x = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.velocity.y = std::stoi(segment);
 
         return packet;
     }
