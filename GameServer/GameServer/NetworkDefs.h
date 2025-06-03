@@ -34,7 +34,9 @@ enum class PacketType : uint8_t {
     CREATE_BULLET = 21,
     DESTROY_BULLET = 22,
     PING = 23,
-    MATCH_FINISHED = 24
+    MATCH_FINISHED = 24,
+    PLAYER_HIT = 25,
+    PLAYER_DEATH = 26
 };
 
 struct InterpolationData {

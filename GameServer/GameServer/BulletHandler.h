@@ -10,7 +10,7 @@ public:
 	void UpdateBullets(float dt);
 	void SetPhysicsManager(PhysicsManager* pManager) { _physicsManager = pManager; }
 	Event<int> onWallHitted;
-	Event<int> onPlayerHitted;
+	Event<int, int> onPlayerHitted;
 private:
 	std::vector<GameObject*> _bullets;
 	PhysicsManager* _physicsManager;

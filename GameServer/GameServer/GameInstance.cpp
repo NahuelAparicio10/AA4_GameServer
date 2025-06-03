@@ -11,9 +11,9 @@ GameInstance::GameInstance(const StartMatchData& data) : _data(data)
     _scene = new GameScene(static_cast<int>(data.players.size()));
 
     _scene->GetBulletHandler()->onPlayerHitted.Subscribe(
-        [this](int playerID) {
-
+        [this](int playerID, int bulletID) {
             WriteConsole("Player Hitted with ID " + playerID);
+            SendToPlayer(playerID, PacketHeader::URGENT, PacketType::PLAYER_HIT, std::to_string(bulletID));
         });
 
     _scene->GetBulletHandler()->onWallHitted.Subscribe(

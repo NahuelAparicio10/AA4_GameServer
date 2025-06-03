@@ -13,7 +13,7 @@ void BulletHandler::CreateBullet(int bulletID, sf::Vector2f position, sf::Vector
 
     auto* rb = bullet->AddComponent<Rigidbody2D>();
     rb->applyGravity = false;
-    rb->velocity = direction * 400.f;
+    rb->velocity = direction * 150.f;
 
     bullet->id = bulletID;
 
@@ -30,7 +30,7 @@ void BulletHandler::CreateBullet(int bulletID, sf::Vector2f position, sf::Vector
             }
             if (other->tag == "Player")
             {
-                onPlayerHitted.Invoke(other->id);
+                onPlayerHitted.Invoke(other->id, me->id);
             }
         });
 }
