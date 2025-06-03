@@ -13,12 +13,17 @@ public:
 
 	 void Update(float dt);
 	 void AddPlayer(unsigned int playerID);
+	 void RegisterPlayer(unsigned int id, GameObject* go) { _playerById[id] = go; }
+	 bool startGame = false;
+
+	#pragma region Getters
+	 sf::Vector2f GetPlayerPositionByID(unsigned int playerID) { return _playerById[playerID]->transform->position; }
 	 GameObject* GetPlayerByIndex(int index) { return _players[index]; }
 	 GameObject* GetPlayerByID(unsigned int id) { return _playerById[id]; }
 	 std::map<unsigned int, GameObject*>& GetPlayerMap() { return _playerById; }
-	 void RegisterPlayer(unsigned int id, GameObject* go) { _playerById[id] = go; }
-	 sf::Vector2f GetPlayerPositionByID(unsigned int playerID) { return _playerById[playerID]->transform->position; }
-	 bool startGame = false;
+	 BulletHandler* GetBulletHandler() { return _bulletHandler; }
+	#pragma endregion
+
 private:
 	PhysicsManager _physicsManager;
 

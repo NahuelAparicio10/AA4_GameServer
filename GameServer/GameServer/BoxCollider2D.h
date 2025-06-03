@@ -13,8 +13,8 @@ public:
 
 	bool isTrigger = false;
 
-	Event<GameObject*> OnCollisionEnter;
-	Event<GameObject*> OnTriggerEnter;
+	Event<GameObject*, GameObject*> OnCollisionEnter;
+	Event<GameObject*, GameObject*> OnTriggerEnter;
 	sf::FloatRect GetBounds(Transform* transform) const;
 
 	virtual const std::type_index GetType() override;

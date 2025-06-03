@@ -2,7 +2,7 @@
 
 BulletHandler::BulletHandler(PhysicsManager* pManager) : _physicsManager(pManager) { }
 
-void BulletHandler::CreateBullet(sf::Vector2f position, sf::Vector2f direction)
+void BulletHandler::CreateBullet(int bulletID, sf::Vector2f position, sf::Vector2f direction)
 {
     auto* bullet = new GameObject();
     bullet->transform->position = position;
@@ -15,10 +15,24 @@ void BulletHandler::CreateBullet(sf::Vector2f position, sf::Vector2f direction)
     rb->applyGravity = false;
     rb->velocity = direction * 400.f;
 
+    bullet->id = bulletID;
+
     if (_physicsManager)
         _physicsManager->Register(bullet);
 
     _bullets.push_back(bullet);
+
+    collider->OnTriggerEnter.Subscribe([this](GameObject* other, GameObject* me) 
+        {
+            if (other->tag == "Wall")
+            {
+                onWallHitted.Invoke(me->id);
+            }
+            if (other->tag == "Player")
+            {
+                onPlayerHitted.Invoke(other->id);
+            }
+        });
 }
 
 void BulletHandler::UpdateBullets(float dt)

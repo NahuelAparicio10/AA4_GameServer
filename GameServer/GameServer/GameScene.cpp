@@ -12,6 +12,8 @@ GameScene::~GameScene()
 	delete _bulletHandler;
 }
 
+// -- Updates bullets and physic system
+
 void GameScene::Update(float dt)
 {
 	_bulletHandler->UpdateBullets(dt);
@@ -25,7 +27,7 @@ void GameScene::Update(float dt)
 }
 
 
-
+// -- Adds a player to the game server with all the components that needs
 void GameScene::AddPlayer(unsigned int playerID)
 {
    //"Añado player " << playerID << "Marikon" << std::endl;
@@ -40,6 +42,7 @@ void GameScene::AddPlayer(unsigned int playerID)
 
     player->AddComponent<BoxCollider2D>()->size = { 32.f, 32.f };
     player->id = playerID;
+    player->tag = "Player";
 
     _physicsManager.Register(player);
     _players.push_back(player);

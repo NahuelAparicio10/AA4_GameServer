@@ -17,11 +17,13 @@ public:
     GameInstance(const StartMatchData& data);
     void EnqueuePacket(const RawPacketJob& job);
     void Run();
+    void HandleShootBullet(const RawPacketJob& job);
     void CreatePlayersForMatch(bool& playersCreated);
     bool IsRunning() const { return _running; }
 private:
     void HandlePlayerMovement(const RawPacketJob& job);
     void SendToPlayer(unsigned int playerID, PacketHeader header, PacketType type, const std::string& content);
+    void BroadcastToAll(PacketHeader header, PacketType type, const std::string& content);
     void BroadcastToOthers(unsigned int senderID, PacketHeader header, PacketType type, const std::string& content);
 
     StartMatchData _data;
@@ -35,5 +37,6 @@ private:
     GameScene* _scene = nullptr;
     sf::Clock clock;
     float accumulator = 0;
+    unsigned int _nextBulletID = 1;
 };
 

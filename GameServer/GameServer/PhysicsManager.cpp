@@ -47,8 +47,8 @@ void PhysicsManager::Update(float dt)
 
                     if (isTriggerA || isTriggerB)
                     {
-                        colliderA->OnTriggerEnter.Invoke(objectB);
-                        colliderB->OnTriggerEnter.Invoke(objectA);
+                        colliderA->OnTriggerEnter.Invoke(objectB, objectA);
+                        colliderB->OnTriggerEnter.Invoke(objectA, objectB);
                         continue;
                     }
 
@@ -82,8 +82,8 @@ void PhysicsManager::Update(float dt)
                         if (mtv.y != 0) rigidbodyB->velocity.y = 0;
                     }
 
-                    colliderA->OnCollisionEnter.Invoke(objectB);
-                    colliderB->OnCollisionEnter.Invoke(objectA);
+                    colliderA->OnCollisionEnter.Invoke(objectB, objectA);
+                    colliderB->OnCollisionEnter.Invoke(objectA, objectB);
                 }
             }
         }

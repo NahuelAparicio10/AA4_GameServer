@@ -10,6 +10,19 @@ GameInstance::GameInstance(const StartMatchData& data) : _data(data)
 {
     _scene = new GameScene(static_cast<int>(data.players.size()));
 
+    _scene->GetBulletHandler()->onPlayerHitted.Subscribe(
+        [this](int playerID) {
+
+            WriteConsole("Player Hitted with ID " + playerID);
+            //_bulletHandler->CreateBullet(packet.bulletID, packet.position, packet.direction);
+        });
+
+        _scene->GetBulletHandler()->onWallHitted.Subscribe(
+            [this](int bulletID) {
+                BroadcastToAll(PacketHeader::NORMAL, PacketType::DESTROY_BULLET, std::to_string(bulletID));
+                WriteConsole("Wall Hitted");
+                //_bulletHandler->CreateBullet(packet.bulletID, packet.position, packet.direction);
+            });
 }
 
 void GameInstance::EnqueuePacket(const RawPacketJob& job)
@@ -98,18 +111,41 @@ void GameInstance::Run()
                 {
                     HandlePlayerMovement(job);
                 }
+                if (job.type == PacketType::SHOOT_BULLET)
+                {
+                    HandleShootBullet(job);
+
+                }
             }
         }
 
         //Simular lógica a pasos fijos
-       //while (accumulator >= 0.033)
-       //{
-        _scene->Update(0.033);
-        //accumulator -= 0.033;
-    //}
+       while (accumulator >= 0.033)
+       {
+            _scene->Update(0.033);
+            accumulator -= 0.033;
+        }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+void GameInstance::HandleShootBullet(const RawPacketJob& job)
+{
+    ShootBulletPacket packet = ShootBulletPacket::Deserialize(job.content);
+
+    // - Creates the bullet in the server
+    _scene->GetBulletHandler()->CreateBullet(_nextBulletID, packet.position, packet.direction);
+
+    // - Sends to all the bullet that anyone has shooted
+    CreateBulletPacket create;
+    create.shooterID = packet.playerID;
+    create.bulletID = _nextBulletID;
+    create.position = packet.position;
+    create.direction = packet.direction;
+
+    BroadcastToAll(PacketHeader::URGENT, PacketType::CREATE_BULLET, create.Serialize());
+    _nextBulletID++;
 }
 
 void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
@@ -129,18 +165,34 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
     // - Simula aquí físicas si quieres mayor fidelidad
     _scene->Update(0.033f); // Aproximadamente 30 FPS
 
-    // -- Corrección de posición (reconciliación)
-    MovementPacket correction;
-    correction.matchID = packet.matchID;
-    correction.playerID = packet.playerID;
-    correction.tick = packet.tick;
-    correction.position = player->transform->position;
-    correction.velocity = rb->velocity;
+    // Verifica si hay diferencia entre lo simulado y lo recibido
+    float dx = std::abs(packet.position.x - player->transform->position.x);
+    float dy = std::abs(packet.position.y - player->transform->position.y);
 
-    SendToPlayer(packet.playerID, PacketHeader::CRITIC, PacketType::RECONCILE, correction.Serialize());
+    if (dx > 5.f || dy > 5.f) {
+        MovementPacket correction;
+        correction.matchID = packet.matchID;
+        correction.playerID = packet.playerID;
+        correction.tick = packet.tick;
+        correction.position = player->transform->position;
+        correction.velocity = rb->velocity;
 
-    // -- Difusión a los demás para interpolación
-    BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, correction.Serialize());
+        SendToPlayer(packet.playerID, PacketHeader::CRITIC, PacketType::RECONCILE, correction.Serialize());
+    }
+    else 
+    {
+        // Difusión normal para interpolación
+        MovementPacket broadcast;
+        broadcast.matchID = packet.matchID;
+        broadcast.playerID = packet.playerID;
+        broadcast.tick = packet.tick;
+        broadcast.position = player->transform->position;
+        broadcast.velocity = rb->velocity;
+
+        BroadcastToOthers(packet.playerID, PacketHeader::NORMAL, PacketType::PLAYER_MOVEMENT, broadcast.Serialize());
+    }
+
+   
 }
 
 //-- Handles all the creation of players systems, sends starting postion of players to clients and waits for them to create
@@ -213,9 +265,6 @@ void GameInstance::CreatePlayersForMatch(bool& playersCreated)
 }
 
 
-
-
-
 // -- Given an ID sends the packet to that client
 void GameInstance::SendToPlayer(unsigned int playerID, PacketHeader header, PacketType type, const std::string& content)
 {
@@ -226,6 +275,14 @@ void GameInstance::SendToPlayer(unsigned int playerID, PacketHeader header, Pack
             SendDatagram(GameServerSocket(), header, type, content, p.ip, p.port);
             return;
         }
+    }
+}
+// -- Sends the packet to all the players connected in this instance
+void GameInstance::BroadcastToAll(PacketHeader header, PacketType type, const std::string& content)
+{
+    for (const auto& p : _connectedPlayers)
+    {
+        SendDatagram(GameServerSocket(), header, type, content, p.ip, p.port);
     }
 }
 

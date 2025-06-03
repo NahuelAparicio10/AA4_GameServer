@@ -29,7 +29,10 @@ enum class PacketType : uint8_t {
     ACK_JOINED = 16,
     ACK_MATCH_CREATED = 17,
     CREATE_PLAYER = 18,
-    ACK_PLAYERS_CREATED = 19
+    ACK_PLAYERS_CREATED = 19,
+    SHOOT_BULLET = 20,
+    CREATE_BULLET = 21,
+    DESTROY_BULLET = 22
 };
 
 struct InterpolationData {
@@ -69,13 +72,79 @@ struct MovementPacket {
     }
 };
 
-struct RawPacketJob {
+#pragma region BULLET
+struct ShootBulletPacket
+{
+    unsigned int matchID;
+    unsigned int playerID;
+    sf::Vector2f position;
+    sf::Vector2f direction;
+
+    std::string Serialize() const {
+        return std::to_string(matchID) + ":" +
+            std::to_string(playerID) + ":" +
+            std::to_string(position.x) + ":" +
+            std::to_string(position.y) + ":" +
+            std::to_string(direction.x) + ":" +
+            std::to_string(direction.y);
+    }
+
+    static ShootBulletPacket Deserialize(const std::string& data) {
+        std::istringstream ss(data);
+        ShootBulletPacket p;
+        std::string value;
+        std::getline(ss, value, ':'); p.matchID = std::stoul(value);
+        std::getline(ss, value, ':'); p.playerID = std::stoul(value);
+        std::getline(ss, value, ':'); p.position.x = std::stof(value);
+        std::getline(ss, value, ':'); p.position.y = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.x = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.y = std::stof(value);
+        return p;
+    }
+};
+
+struct CreateBulletPacket
+{
+    unsigned int shooterID;
+    unsigned int bulletID;
+    sf::Vector2f position;
+    sf::Vector2f direction;
+
+    std::string Serialize() const {
+        return std::to_string(shooterID) + ":" +
+            std::to_string(bulletID) + ":" +
+            std::to_string(position.x) + ":" +
+            std::to_string(position.y) + ":" +
+            std::to_string(direction.x) + ":" +
+            std::to_string(direction.y);
+    }
+
+    static CreateBulletPacket Deserialize(const std::string& data) {
+        std::istringstream ss(data);
+        CreateBulletPacket p;
+        std::string value;
+        std::getline(ss, value, ':'); p.shooterID = std::stoul(value);
+        std::getline(ss, value, ':'); p.bulletID = std::stoul(value);
+        std::getline(ss, value, ':'); p.position.x = std::stof(value);
+        std::getline(ss, value, ':'); p.position.y = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.x = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.y = std::stof(value);
+        return p;
+    }
+};
+#pragma endregion
+
+
+struct RawPacketJob 
+{
     uint8_t headerMask;
     PacketType type;
     std::string content;
     std::optional<sf::IpAddress> sender;
     unsigned short port;
 };
+
+#pragma region Datagram Methods
 
 // Función para crear un datagrama listo para enviar
 inline std::size_t CreateRawDatagram(uint8_t headerMask, PacketType type, const std::string& content, char* outBuffer)
@@ -110,3 +179,4 @@ inline bool ParseRawDatagram(const char* data, std::size_t size, RawPacketJob& o
     return true;
 }
 
+#pragma endregion
