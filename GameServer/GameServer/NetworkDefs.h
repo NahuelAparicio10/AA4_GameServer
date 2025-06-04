@@ -2,11 +2,11 @@
 #include <SFML/Network.hpp>
 #include <cstdint>
 #include <string>
-
+#include <sstream>
 enum PacketHeader : uint8_t {
     NORMAL = 0b00000001,
-    URGENT = 0b00000010,
-    CRITICAL = 0b00000100
+    CRITIC = 0b00000010,
+    URGENT = 0b00000100
 };
 
 enum class PacketType : uint8_t {
@@ -23,18 +23,133 @@ enum class PacketType : uint8_t {
     JOIN_GAME = 10,
     CREATE_MATCH = 11,
     MATCH_UNIQUE = 12,
-    MATCH_USED = 13
-
+    MATCH_USED = 13,
+    PLAYER_MOVEMENT = 14,
+    RECONCILE = 15,
+    ACK_JOINED = 16,
+    ACK_MATCH_CREATED = 17,
+    CREATE_PLAYER = 18,
+    ACK_PLAYERS_CREATED = 19,
+    SHOOT_BULLET = 20,
+    CREATE_BULLET = 21,
+    DESTROY_BULLET = 22,
+    PING = 23,
+    MATCH_FINISHED = 24,
+    PLAYER_HIT = 25,
+    PLAYER_DEATH = 26,
+    EMOTE = 27
 };
 
+struct InterpolationData {
+    sf::Vector2f previous;
+    sf::Vector2f current;
+    float timer = 0.f;
+};
+struct MovementPacket {
+    uint32_t matchID;
+    uint32_t playerID;
+    uint32_t tick;
+    sf::Vector2f position;
+    sf::Vector2f velocity;
 
-struct RawPacketJob {
+    std::string Serialize() const {
+        std::ostringstream ss;
+        ss << matchID << ":" << playerID << ":" << tick << ":"
+            << position.x << ":" << position.y << ":"
+            << velocity.x << ":" << velocity.y;
+        return ss.str();
+    }
+
+    static MovementPacket Deserialize(const std::string& content) {
+        MovementPacket packet;
+        std::istringstream ss(content);
+        std::string segment;
+
+        std::getline(ss, segment, ':'); packet.matchID = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.playerID = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.tick = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.position.x = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.position.y = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.velocity.x = std::stoi(segment);
+        std::getline(ss, segment, ':'); packet.velocity.y = std::stoi(segment);
+
+        return packet;
+    }
+};
+
+#pragma region BULLET
+struct ShootBulletPacket
+{
+    unsigned int matchID;
+    unsigned int playerID;
+    sf::Vector2f position;
+    sf::Vector2f direction;
+
+    std::string Serialize() const {
+        return std::to_string(matchID) + ":" +
+            std::to_string(playerID) + ":" +
+            std::to_string(position.x) + ":" +
+            std::to_string(position.y) + ":" +
+            std::to_string(direction.x) + ":" +
+            std::to_string(direction.y);
+    }
+
+    static ShootBulletPacket Deserialize(const std::string& data) {
+        std::istringstream ss(data);
+        ShootBulletPacket p;
+        std::string value;
+        std::getline(ss, value, ':'); p.matchID = std::stoul(value);
+        std::getline(ss, value, ':'); p.playerID = std::stoul(value);
+        std::getline(ss, value, ':'); p.position.x = std::stof(value);
+        std::getline(ss, value, ':'); p.position.y = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.x = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.y = std::stof(value);
+        return p;
+    }
+};
+
+struct CreateBulletPacket
+{
+    unsigned int shooterID;
+    unsigned int bulletID;
+    sf::Vector2f position;
+    sf::Vector2f direction;
+
+    std::string Serialize() const {
+        return std::to_string(shooterID) + ":" +
+            std::to_string(bulletID) + ":" +
+            std::to_string(position.x) + ":" +
+            std::to_string(position.y) + ":" +
+            std::to_string(direction.x) + ":" +
+            std::to_string(direction.y);
+    }
+
+    static CreateBulletPacket Deserialize(const std::string& data) {
+        std::istringstream ss(data);
+        CreateBulletPacket p;
+        std::string value;
+        std::getline(ss, value, ':'); p.shooterID = std::stoul(value);
+        std::getline(ss, value, ':'); p.bulletID = std::stoul(value);
+        std::getline(ss, value, ':'); p.position.x = std::stof(value);
+        std::getline(ss, value, ':'); p.position.y = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.x = std::stof(value);
+        std::getline(ss, value, ':'); p.direction.y = std::stof(value);
+        return p;
+    }
+};
+#pragma endregion
+
+
+struct RawPacketJob 
+{
     uint8_t headerMask;
     PacketType type;
     std::string content;
     std::optional<sf::IpAddress> sender;
     unsigned short port;
 };
+
+#pragma region Datagram Methods
 
 // Función para crear un datagrama listo para enviar
 inline std::size_t CreateRawDatagram(uint8_t headerMask, PacketType type, const std::string& content, char* outBuffer)
@@ -69,3 +184,4 @@ inline bool ParseRawDatagram(const char* data, std::size_t size, RawPacketJob& o
     return true;
 }
 
+#pragma endregion

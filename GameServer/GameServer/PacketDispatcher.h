@@ -19,8 +19,8 @@ public:
 
 private:
     std::queue<RawPacketJob> _queueNormal;
+    std::queue<RawPacketJob> _queueCritic;
     std::queue<RawPacketJob> _queueUrgent;
-    std::queue<RawPacketJob> _queueCritical;
     std::map<PacketType, std::function<void(const RawPacketJob&)>> _handlers;
     std::mutex _mutex;
     std::atomic<bool> _running;
