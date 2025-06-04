@@ -30,7 +30,7 @@ void GameScene::Update(float dt)
 // -- Adds a player to the game server with all the components that needs
 void GameScene::AddPlayer(unsigned int playerID)
 {
-   //"Añado player " << playerID << "Marikon" << std::endl;
+   //"Añado player " 
     auto* player = new GameObject();
 
     // Espaciado horizontal por ID
@@ -48,5 +48,5 @@ void GameScene::AddPlayer(unsigned int playerID)
     _players.push_back(player);
     _playerById[playerID] = player;
 
-    //return player->transform->position;
+   
 }

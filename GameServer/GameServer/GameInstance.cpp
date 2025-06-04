@@ -3,18 +3,21 @@
 
 extern sf::UdpSocket* gGameServerSocket;
 
-sf::UdpSocket& GameServerSocket() {
-    return *gGameServerSocket;
-}
+sf::UdpSocket& GameServerSocket() { return *gGameServerSocket; }
+
 GameInstance::GameInstance(const StartMatchData& data) : _data(data)
 {
     _scene = new GameScene(static_cast<int>(data.players.size()));
 
-    _scene->GetBulletHandler()->onPlayerHitted.Subscribe(
-        [this](int playerID, int bulletID) {
+    // - If bullet hited a player broadcast the info
+
+    _scene->GetBulletHandler()->onPlayerHitted.Subscribe([this](int playerID, int bulletID) 
+        {
             SendToPlayer(playerID, PacketHeader::URGENT, PacketType::PLAYER_HIT, std::to_string(bulletID));
             BroadcastToOthers(playerID, PacketHeader::URGENT, PacketType::DESTROY_BULLET, std::to_string(bulletID));
         });
+    
+    // - If bullet hited a wall broadcast the info
 
     _scene->GetBulletHandler()->onWallHitted.Subscribe(
         [this](int bulletID) {
@@ -33,9 +36,14 @@ GameInstance::~GameInstance()
     delete _scene;
 }
 
+// -- EnqueuePacket from Game Server
+
 void GameInstance::EnqueuePacket(const RawPacketJob& job)
 {
     std::lock_guard<std::mutex> lock(_queueMutex);
+    
+    if (_connectedPlayers.size() >= 2 && static_cast<int>(job.type) == 10) { return; }
+
     _packetQueue.push(job);
 }
 
@@ -44,49 +52,50 @@ void GameInstance::Run()
     WriteConsole("[MATCH ", _data.matchID, "] Started with ", _data.players.size(), " players.");
 
     unsigned int joined = 0;
-    while (joined < _data.players.size()) {
+
+    // - If all the player hasn't joined waits them to send JOIN_GAME
+
+    while (joined < _data.players.size()) 
+    {
         {
             std::lock_guard<std::mutex> lock(_queueMutex);
-            if (!_packetQueue.empty())
+
+            while (!_packetQueue.empty())
             {
-                RawPacketJob job = _packetQueue.front(); _packetQueue.pop();
+                RawPacketJob job = _packetQueue.front();
+
                 if (job.type == PacketType::JOIN_GAME)
                 {
+                    _packetQueue.pop();
+
                     for (const auto& p : _data.players)
                     {
                         if (p.ip == job.sender && p.port == job.port)
                         {
-                            // - Check if player is already joined
-                            bool alreadyJoined = false;
-                            for (const auto& existing : _connectedPlayers)
-                            {
-                                if (existing.playerID == p.playerID)
-                                {
-                                    alreadyJoined = true;
-                                    break;
-                                }
-                            }
+                            bool alreadyJoined = std::any_of(
+                                _connectedPlayers.begin(), _connectedPlayers.end(),
+                                [&](const auto& existing) { return existing.playerID == p.playerID; }
+                            );
 
                             if (alreadyJoined)
-                                break; // - Ignores JOIN_GAME duplicateds
+                                break;
 
                             _connectedPlayers.push_back(p);
                             joined++;
 
                             WriteConsole("[MATCH ", _data.matchID, "] Player joined: ", p.ip, ":", p.port);
 
-                            // --- ENVÍA CONFIRMACIÓN ---
-                            SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::ACK_JOINED, _data.numOfPlayers + "", p.ip, p.port);
+                            SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::ACK_JOINED, std::to_string(_data.numOfPlayers), p.ip, p.port);
                             break;
                         }
                     }
                 }
             }
-
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+    
     WriteConsole("[MATCH ", _data.matchID, "] All players joined. Starting game logic...");
 
     // -- Create players in Server
@@ -112,7 +121,9 @@ void GameInstance::Run()
         {
             const int maxPacketsPerFrame = 10;
             int processed = 0;
+            
             std::lock_guard<std::mutex> lock(_queueMutex);
+
             while (!_packetQueue.empty() && processed < maxPacketsPerFrame)
             {
                 RawPacketJob job = _packetQueue.front(); _packetQueue.pop();
@@ -152,27 +163,10 @@ void GameInstance::Run()
                 processed++;
             }
         }
+        // - Check for disconnected players
 
-        // Check for disconnected players
-        auto now = std::chrono::steady_clock::now();
-        for (auto it = _connectedPlayers.begin(); it != _connectedPlayers.end(); )
-        {
-            const auto& p = *it;
-            if (_lastRespond.find(p.playerID) != _lastRespond.end())
-            {
-                auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - _lastRespond[p.playerID]).count();
-                if (duration > 5)  
-                {
-                    WriteConsole("[MATCH ", _data.matchID, "] Player ", p.playerID, " disconnected due to timeout.");
+        CheckDisconnections();
 
-                    HandlePlayerDisconnected(p.playerID);
-
-                    it = _connectedPlayers.erase(it); 
-                    continue;
-                }
-            }
-            ++it;
-        }
         // - Simulates fixes in a fixed timestep
        while (accumulator >= 0.033f)
        {
@@ -184,11 +178,35 @@ void GameInstance::Run()
     }
 }
 
+void GameInstance::CheckDisconnections()
+{
+    auto now = std::chrono::steady_clock::now();
+
+    for (auto it = _connectedPlayers.begin(); it != _connectedPlayers.end(); )
+    {
+        const auto& p = *it;
+        if (_lastRespond.find(p.playerID) != _lastRespond.end())
+        {
+            auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - _lastRespond[p.playerID]).count();
+            if (duration > 5)
+            {
+                WriteConsole("[MATCH ", _data.matchID, "] Player ", p.playerID, " disconnected due to timeout.");
+
+                HandlePlayerDisconnected(p.playerID);
+
+                it = _connectedPlayers.erase(it);
+                continue;
+            }
+        }
+        ++it;
+    }
+}
+
 // -- Notifies to other players that match is finished and removes Game instance
+
 void GameInstance::HandlePlayerDisconnected(unsigned int playerID)
 {
     BroadcastToOthers(playerID, PacketHeader::URGENT, PacketType::MATCH_FINISHED, std::to_string(playerID));
-
     _running = false;
 }
 
@@ -225,10 +243,13 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
     _scene->Update(0.033f); // - 30 fps
 
     // - Checks the difference between server pos and player pos local
+
     float dx = std::abs(packet.position.x - player->transform->position.x);
     float dy = std::abs(packet.position.y - player->transform->position.y);
 
-    if (dx > 7.5f || dy > 7.5f) {
+    if (dx > 5.f || dy > 5.f) 
+    {
+        // - If the pos difference is to big send reconciliation needed
         MovementPacket correction;
         correction.matchID = packet.matchID;
         correction.playerID = packet.playerID;
@@ -238,7 +259,9 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
 
         SendToPlayer(packet.playerID, PacketHeader::URGENT, PacketType::RECONCILE, correction.Serialize());
     }
-    // Difusión normal para interpolación
+    
+    // - Sends player pos difusion for interpolation
+
     MovementPacket broadcast;
     broadcast.matchID = packet.matchID;
     broadcast.playerID = packet.playerID;
@@ -318,7 +341,6 @@ void GameInstance::CreatePlayersForMatch(bool& playersCreated)
     }
 }
 
-
 // -- Given an ID sends the packet to that client
 void GameInstance::SendToPlayer(unsigned int playerID, PacketHeader header, PacketType type, const std::string& content)
 {
@@ -341,7 +363,6 @@ void GameInstance::BroadcastToAll(PacketHeader header, PacketType type, const st
 }
 
 //-- Given an ID sends the packet to every client unless ID client.
-
 void GameInstance::BroadcastToOthers(unsigned int senderID, PacketHeader header, PacketType type, const std::string& content)
 {
     for (const auto& p : _connectedPlayers)

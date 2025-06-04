@@ -18,6 +18,7 @@ public:
     ~GameInstance();
     void EnqueuePacket(const RawPacketJob& job);
     void Run();
+    void CheckDisconnections();
     void HandlePlayerDisconnected(unsigned int playerID);
     void HandleShootBullet(const RawPacketJob& job);
     void CreatePlayersForMatch(bool& playersCreated);
@@ -31,15 +32,15 @@ private:
     StartMatchData _data;
     std::vector<ClientMatchInfo> _connectedPlayers;
 
-    std::queue<RawPacketJob> _packetQueue;
     std::mutex _queueMutex;
+    std::queue<RawPacketJob> _packetQueue;
+    
     std::atomic<bool> _running = true;
 
     GameScene* _scene = nullptr;
     sf::Clock clock;
     float accumulator = 0;
     unsigned int _nextBulletID = 1;
-
     
     std::unordered_map<unsigned int, std::chrono::steady_clock::time_point> _lastRespond;
 };

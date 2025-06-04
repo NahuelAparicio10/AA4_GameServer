@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 #include <sstream>
+
+#pragma region Packet Types ETC
 enum PacketHeader : uint8_t {
     NORMAL = 0b00000001,
     CRITIC = 0b00000010,
@@ -39,6 +41,16 @@ enum class PacketType : uint8_t {
     PLAYER_DEATH = 26,
     EMOTE = 27
 };
+struct RawPacketJob
+{
+    uint8_t headerMask;
+    PacketType type;
+    std::string content;
+    std::optional<sf::IpAddress> sender;
+    unsigned short port;
+};
+
+
 
 struct InterpolationData {
     sf::Vector2f previous;
@@ -76,6 +88,8 @@ struct MovementPacket {
         return packet;
     }
 };
+
+#pragma endregion
 
 #pragma region BULLET
 struct ShootBulletPacket
@@ -138,16 +152,6 @@ struct CreateBulletPacket
     }
 };
 #pragma endregion
-
-
-struct RawPacketJob 
-{
-    uint8_t headerMask;
-    PacketType type;
-    std::string content;
-    std::optional<sf::IpAddress> sender;
-    unsigned short port;
-};
 
 #pragma region Datagram Methods
 
