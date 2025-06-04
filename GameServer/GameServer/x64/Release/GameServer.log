@@ -1,0 +1,209 @@
+﻿  BoxCollider2D.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'BoxCollider2D.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+  BulletHandler.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'BulletHandler.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+  GameInstance.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'GameInstance.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         ]
+  (compiling source file 'GameInstance.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         ]
+  (compiling source file 'GameInstance.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         ]
+  (compiling source file 'GameInstance.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         ]
+  (compiling source file 'GameInstance.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(171,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'GameInstance.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\GameInstance.cpp(159,62): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  GameObject.cpp
+  GameScene.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'GameScene.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+  GameServer.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'GameServer.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         ]
+  (compiling source file 'GameServer.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         ]
+  (compiling source file 'GameServer.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         ]
+  (compiling source file 'GameServer.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         ]
+  (compiling source file 'GameServer.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(171,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'GameServer.cpp')
+  
+  Main.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'Main.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         ]
+  (compiling source file 'Main.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         ]
+  (compiling source file 'Main.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         ]
+  (compiling source file 'Main.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         ]
+  (compiling source file 'Main.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(171,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'Main.cpp')
+  
+  MapManager.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'MapManager.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\MapManager.cpp(35,14): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\MapManager.cpp(36,14): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\MapManager.cpp(37,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\MapManager.cpp(38,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  PacketDispatcher.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'PacketDispatcher.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(83,70): warning C4244:         ]
+  (compiling source file 'PacketDispatcher.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(84,70): warning C4244:         ]
+  (compiling source file 'PacketDispatcher.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(85,70): warning C4244:         ]
+  (compiling source file 'PacketDispatcher.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         with
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         [
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:             T=float
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(86,70): warning C4244:         ]
+  (compiling source file 'PacketDispatcher.cpp')
+  
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\GameServer\NetworkDefs.h(171,16): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  (compiling source file 'PacketDispatcher.cpp')
+  
+  PhysicsManager.cpp
+E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file 'PhysicsManager.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+  Rigidbody2D.cpp
+  Transform.cpp
+  Generating code
+  Previous IPDB was built with incompatible compiler, fall back to full compilation.
+  All 2133 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  GameServer.vcxproj -> E:\3r CDI\Xarxes\AA4_UDP_Shooter\AA4_GameServer\GameServer\x64\Release\GameServer.exe
