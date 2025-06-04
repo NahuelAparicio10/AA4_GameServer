@@ -8,7 +8,7 @@ public:
     sf::Vector2f velocity;
     bool grounded = false;
     bool applyGravity = true;
-    float gravityScale = 300.f;
+    float gravityScale = 200.f;
     void Update(Transform* transform, float dt);
     const std::type_index GetType() override;
 

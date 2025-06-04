@@ -8,9 +8,9 @@ void Rigidbody2D::Update(Transform* transform, float dt)
 	}
 
 	transform->position += velocity * dt;
-	if (velocity.y <= -300.f)
+	if (velocity.y <= -200.f)
 	{
-		velocity.y = -300.f;
+		velocity.y = -200.f;
 	}
 }
 

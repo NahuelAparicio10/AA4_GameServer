@@ -247,7 +247,7 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
     float dx = std::abs(packet.position.x - player->transform->position.x);
     float dy = std::abs(packet.position.y - player->transform->position.y);
 
-    if (dx > 5.f || dy > 5.f) 
+    if (dx > 7.f || dy > 7.f) 
     {
         // - If the pos difference is to big send reconciliation needed
         MovementPacket correction;
