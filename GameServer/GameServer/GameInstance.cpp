@@ -12,19 +12,24 @@ GameInstance::GameInstance(const StartMatchData& data) : _data(data)
 
     _scene->GetBulletHandler()->onPlayerHitted.Subscribe(
         [this](int playerID, int bulletID) {
-            WriteConsole("Player Hitted with ID " + playerID);
             SendToPlayer(playerID, PacketHeader::URGENT, PacketType::PLAYER_HIT, std::to_string(bulletID));
+            BroadcastToOthers(playerID, PacketHeader::URGENT, PacketType::DESTROY_BULLET, std::to_string(bulletID));
         });
 
     _scene->GetBulletHandler()->onWallHitted.Subscribe(
         [this](int bulletID) {
             BroadcastToAll(PacketHeader::NORMAL, PacketType::DESTROY_BULLET, std::to_string(bulletID));
-            WriteConsole("Wall Hitted");
         });
 }
 
 GameInstance::~GameInstance()
 {
+    _connectedPlayers.clear();
+    while (!_packetQueue.empty()) 
+    {
+        _packetQueue.pop();
+    }
+    _lastRespond.clear();
     delete _scene;
 }
 
@@ -131,6 +136,19 @@ void GameInstance::Run()
                         }
                     }
                 }
+                if (job.type == PacketType::PLAYER_DEATH)
+                {
+                    BroadcastToAll(PacketHeader::URGENT, PacketType::MATCH_FINISHED, "");
+                }
+                if (job.type == PacketType::EMOTE)
+                {
+                    int playerID;
+                    std::istringstream ss(job.content);
+                    std::string segment;
+                    std::getline(ss, segment, ':'); std::stoi(segment);
+                    std::getline(ss, segment, ':'); playerID = std::stoi(segment);
+                    BroadcastToOthers(playerID, PacketHeader::URGENT, PacketType::EMOTE, "");
+                }
                 processed++;
             }
         }
@@ -155,7 +173,7 @@ void GameInstance::Run()
             }
             ++it;
         }
-        //Simular lógica a pasos fijos
+        // - Simulates fixes in a fixed timestep
        while (accumulator >= 0.033f)
        {
             _scene->Update(0.033f);
@@ -195,7 +213,6 @@ void GameInstance::HandleShootBullet(const RawPacketJob& job)
 void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
 {
     MovementPacket packet = MovementPacket::Deserialize(job.content);
-    _lastClientReported[packet.playerID] = packet;
     GameObject* player = _scene->GetPlayerByID(packet.playerID);
     if (!player) return;
 
@@ -219,7 +236,7 @@ void GameInstance::HandlePlayerMovement(const RawPacketJob& job)
         correction.position = player->transform->position;
         correction.velocity = rb->velocity;
 
-        SendToPlayer(packet.playerID, PacketHeader::CRITIC, PacketType::RECONCILE, correction.Serialize());
+        SendToPlayer(packet.playerID, PacketHeader::URGENT, PacketType::RECONCILE, correction.Serialize());
     }
     // Difusión normal para interpolación
     MovementPacket broadcast;
@@ -258,7 +275,7 @@ void GameInstance::CreatePlayersForMatch(bool& playersCreated)
                 }
                 msg.pop_back();
 
-                SendDatagram(GameServerSocket(), PacketHeader::CRITIC, PacketType::CREATE_PLAYER, msg, receiver.ip, receiver.port);
+                SendDatagram(GameServerSocket(), PacketHeader::URGENT, PacketType::CREATE_PLAYER, msg, receiver.ip, receiver.port);
             }
 
             // - Waits for ACK_PLAYERS_CREATED from both clients during 500 ms if ack is no recieved tries create player again

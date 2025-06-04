@@ -35,7 +35,6 @@ private:
     std::mutex _queueMutex;
     std::atomic<bool> _running = true;
 
-    std::map<unsigned int, MovementPacket> _lastClientReported;
     GameScene* _scene = nullptr;
     sf::Clock clock;
     float accumulator = 0;
