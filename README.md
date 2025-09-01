@@ -10,13 +10,10 @@
 **GOAL** 
 Implement the authoritative gameplay server responsible for running matches, validating states, handling collisions, and reporting results.
 
-**How I resolved it** 
+**How we resolved it** 
 
-I developed the server in C++ with Visual Studio, using UDP for real-time communication. Each match runs on a separate thread, ensuring concurrency and scalability. The server applies reconciliation and prediction techniques to handle lag and ensures fair authoritative gameplay.
+We developed the server in C++ with Visual Studio, using UDP for real-time communication. Each match runs on a separate thread, ensuring concurrency and scalability. The server applies reconciliation and prediction techniques to handle lag and ensures fair authoritative gameplay.
 
-**What I learned** 
-
-I learned about authoritative multiplayer server architecture, how to manage multiple threads for concurrent matches, and how to implement prediction/reconciliation to improve online playability.
 
 [![Shooter Client](https://img.shields.io/badge/Shooter_Client-Repository-blue?logo=github)](https://github.com/NahuelAparicio10/UDP_Shooter_Client)
 
@@ -32,3 +29,8 @@ Nahuel Aparicio Del Blanco
 - GitHub: https://github.com/NahuelAparicio10
 - Email: nahuel.ap.code@gmail.com
 - LinkedIn: https://www.linkedin.com/in/nahuel-aparicio-del-blanco
+
+Lluc Ferrando Jorda
+- GitHub: 
+- Email: 
+- LinkedIn: 
