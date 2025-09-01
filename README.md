@@ -8,6 +8,7 @@
 
 
 **GOAL** 
+
 Implement the authoritative gameplay server responsible for running matches, validating states, handling collisions, and reporting results.
 
 **How we resolved it** 
